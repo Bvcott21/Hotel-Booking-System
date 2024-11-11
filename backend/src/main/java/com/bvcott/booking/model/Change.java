@@ -1,5 +1,6 @@
 package com.bvcott.booking.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
@@ -20,6 +21,8 @@ public class Change {
     private ChangeAction action;
     
     private String changeDescription;
+
+    private LocalDateTime changeTime;
 
     public Change(ChangeAction action, String changeDescription) {
         this.action = action;

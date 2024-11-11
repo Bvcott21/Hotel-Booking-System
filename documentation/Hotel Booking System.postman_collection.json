@@ -1,0 +1,98 @@
+{
+	"info": {
+		"_postman_id": "91fe550a-cc64-4213-8e17-04b7a8982a48",
+		"name": "Hotel Booking System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10503211"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "find all hotel owners",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/admin/find/hotel-owner/all",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"find",
+										"hotel-owner",
+										"all"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create hotel owner",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\" : \"new owner\",\n    \"balance\" : 50000\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/admin/create/hotel-owner/69dea886-858c-4eb2-9be1-b6c681f001c6",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"create",
+										"hotel-owner",
+										"69dea886-858c-4eb2-9be1-b6c681f001c6"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "find all users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

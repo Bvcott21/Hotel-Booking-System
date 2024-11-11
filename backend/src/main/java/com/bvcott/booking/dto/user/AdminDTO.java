@@ -12,4 +12,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 public class AdminDTO extends UserDTO{
-    private List
+    private List<ChangeDTO> changes;
+}
