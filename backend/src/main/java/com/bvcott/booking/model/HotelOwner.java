@@ -6,5 +6,5 @@ import lombok.EqualsAndHashCode;
 
 @Entity @Data @EqualsAndHashCode(callSuper = false)
 public class HotelOwner extends User {
-    
+    double balance;
 }

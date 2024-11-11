@@ -15,7 +15,7 @@ import com.bvcott.booking.repository.UserRepository;
 import com.bvcott.booking.service.user.UserService;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+class UserServiceTest {
     @Mock private UserRepository userRepo;
     @Autowired @InjectMocks private UserService userService;
 
@@ -23,7 +23,7 @@ public class UserServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test public void testFindAllUsers_callsUserRepoFindAll() {
+    @Test void testFindAllUsers_callsUserRepoFindAll() {
         userService.findAll();
         verify(userRepo).findAll();
     }

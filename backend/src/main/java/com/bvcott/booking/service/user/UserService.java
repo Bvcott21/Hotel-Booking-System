@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bvcott.booking.converter.user.UserConverter;
@@ -24,7 +23,7 @@ public class UserService {
         return userRepo
             .findAll()
             .stream()
-            .map(user -> userConverter.toDto(user))
+            .map(userConverter::toDto)
             .collect(Collectors.toList());     
     }
 

@@ -1,13 +1,15 @@
 package com.bvcott.booking.dto.user;
 
-import com.bvcott.booking.model.UserType;
 import java.util.UUID;
+
+import com.bvcott.booking.model.UserType;
+
 import lombok.Data;
-import lombok.Builder;
+import lombok.experimental.SuperBuilder;
 
 
 
-@Data @Builder
+@Data @SuperBuilder
 public class UserDTO {
     private UUID userId;
     private UserType userType;

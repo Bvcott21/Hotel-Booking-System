@@ -6,26 +6,30 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bvcott.booking.converter.user.UserConverter;
 import com.bvcott.booking.dto.user.UserDTO;
+import com.bvcott.booking.dto.user.hotelOwner.HotelOwnerCreateDTO;
+import com.bvcott.booking.dto.user.hotelOwner.HotelOwnerDTO;
 import com.bvcott.booking.exception.user.ActionNotAllowedException;
 import com.bvcott.booking.exception.user.UserNotFoundException;
 import com.bvcott.booking.model.Administrator;
 import com.bvcott.booking.model.HotelOwner;
 import com.bvcott.booking.model.User;
-import com.bvcott.booking.model.UserType;
 import com.bvcott.booking.repository.UserRepository;
+import com.bvcott.booking.utility.RandomStringGenerator;
 
-@Service
+import lombok.AllArgsConstructor;
+
+@Service @AllArgsConstructor
 public class AdminService {
     private static final Logger log = LoggerFactory.getLogger(AdminService.class);
-    @Autowired UserRepository userRepo;
-    @Autowired UserConverter userConverter;
+    private final UserRepository userRepo;
+    private final UserConverter userConverter;
+    private final RandomStringGenerator passwordGenerator;
 
-    public UserDTO createHotelOwner(UUID adminId, UserDTO dto) {
+    public HotelOwnerDTO createHotelOwner(UUID adminId, HotelOwnerCreateDTO dto) {
         log.info("createHotelOwner triggered with values ID: {} | dto: {}", adminId, dto);
         log.debug("checking if ID provided belongs to an admin");
 
@@ -37,21 +41,27 @@ public class AdminService {
             throw new ActionNotAllowedException("Only Administrators can create new Hotel Owners");
         }
 
-        if(dto.getUserType() != UserType.HOTEL_OWNER) {
-            throw new ActionNotAllowedException("Not creating an Hotel Owner, if trying to create a different type of user please refer to the appropriate form.");
+        HotelOwner hotelOwnerToPersist = new HotelOwner();
+        hotelOwnerToPersist.setUsername(dto.getUsername());
+        hotelOwnerToPersist.setPassword(passwordGenerator.generateRandomString(10));
+        
+        if(dto.getBalance() < 5000) {
+            throw new ActionNotAllowedException("Minimum allowed balance is of 5000 for a new Hotel Owner.");
         }
 
-        HotelOwner hotelOwnerToPersist = (HotelOwner) userConverter.toEntity(dto);
+        hotelOwnerToPersist.setBalance(dto.getBalance());
+
         User persistedHotelOwner = userRepo.save(hotelOwnerToPersist);
 
-        return userConverter.toDto(persistedHotelOwner);
+        return (HotelOwnerDTO) userConverter.toDto(persistedHotelOwner);
     }
 
     public List<UserDTO> findAllHotelOwners() {
         return userRepo
             .findByUserType(HotelOwner.class)
             .stream()
-            .map(user -> userConverter.toDto(user))
+            .map(userConverter::toDto)
             .collect(Collectors.toList());
     }
+
 }
