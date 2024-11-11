@@ -16,7 +16,9 @@ public class Change {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID changeId;
     
-    @Enumerated(EnumType.STRING) private ChangeAction action;
+    @Enumerated(EnumType.STRING) 
+    private ChangeAction action;
+    
     private String changeDescription;
 
     public Change(ChangeAction action, String changeDescription) {

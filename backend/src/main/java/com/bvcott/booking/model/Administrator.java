@@ -9,5 +9,4 @@ import lombok.EqualsAndHashCode;
 
 @Entity @Data @EqualsAndHashCode(callSuper = false)
 public class Administrator extends User {
-    private List<Change> changes = new ArrayList<>();
-}
+    //private List<Change> changes = new ArrayList<>();

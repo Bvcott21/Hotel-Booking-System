@@ -1,9 +1,11 @@
 package com.bvcott.booking.dto.user;
 
+import com.bvcott.booking.model.UserType;
 import java.util.UUID;
+import lombok.Data;
+import lombok.Builder;
 
-public class UserDTO {
-    private UUID userId;
-    private String username;
-    private String password;
-}
+
+
+@Data @Builder
+public

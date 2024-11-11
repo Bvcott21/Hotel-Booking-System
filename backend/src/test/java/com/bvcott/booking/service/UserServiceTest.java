@@ -2,8 +2,6 @@ package com.bvcott.booking.service;
 
 import static org.mockito.Mockito.verify;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,8 +11,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.bvcott.booking.dto.user.UserDTO;
 import com.bvcott.booking.repository.UserRepository;
+import com.bvcott.booking.service.user.UserService;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
