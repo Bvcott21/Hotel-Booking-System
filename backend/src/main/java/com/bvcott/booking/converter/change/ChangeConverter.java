@@ -17,4 +17,11 @@ public class ChangeConverter {
     }
 
     public Change toEntity(ChangeDTO dto) {
-        Change en
+        Change entity = new Change();
+        entity.setChangeId(dto.getChangeId());
+        entity.setAction(dto.getAction());
+        entity.setChangeDescription(dto.getChangeDescription());
+        entity.setChangeTime(dto.getChangeTime());
+        return entity;
+    }
+}
