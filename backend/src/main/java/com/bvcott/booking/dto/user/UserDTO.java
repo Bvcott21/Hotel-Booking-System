@@ -8,4 +8,9 @@ import lombok.Builder;
 
 
 @Data @Builder
-public
+public class UserDTO {
+    private UUID userId;
+    private UserType userType;
+    private String username;
+    private String password;
+}

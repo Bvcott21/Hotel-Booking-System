@@ -35,4 +35,22 @@ public class GlobalExceptionHandler {
         return exceptionHandler(ex, HttpStatus.FORBIDDEN);
     }
 
-    private static ResponseEnt
+    private static ResponseEntity<Object> exceptionHandler(RuntimeException ex, HttpStatus status) {
+        ErrorResponse errorResponse = new ErrorResponse(status, ex.getMessage());
+        return new ResponseEntity<>(errorResponse, status);
+    }
+
+    @Getter
+    private static class ErrorResponse {
+        private int status;
+        private String error;
+        private String message;
+        
+        public ErrorResponse(HttpStatus status, String message) {
+            this.status = status.value();
+            this.error = status.getReasonPhrase();
+            this.message = message;
+        }
+        
+    }
+}

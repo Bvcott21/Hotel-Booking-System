@@ -11,4 +11,6 @@ import lombok.Getter;
 public class UserCreateDTO {
     private UUID userId;
     private UserType userType;
-    private Str
+    private String username;
+    private String password;
+}
