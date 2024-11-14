@@ -75,16 +75,22 @@ public class AdminService {
     }
 
     public void deleteHotelOwner(UUID adminId, UUID hotelOwnerId) {
+        log.info("deleteHotelOwner triggered with values: Admin ID: {}, Hotel Owner ID: {}", adminId, hotelOwnerId);
+
+        log.debug("Finding admin by ID...");
         Administrator admin = adminRepo
             .findById(adminId)
             .orElseThrow(() -> new UserNotFoundException("Admin not found with the provided ID"));
 
+            log.debug("Admin found, finding Hotel Owner by ID...");
         User hotelOwnerToDelete = userRepo
             .findById(hotelOwnerId)
             .orElseThrow(() -> new UserNotFoundException("Hotel Owner not found. Can't delete"));
 
+        log.debug("Hotel owner found, deleting...");
         userRepo.delete(hotelOwnerToDelete);
 
+        log.debug("Hotel owner deleted successfully, logging activity on Administrator...");
         Change change = new Change();
         change.setAction(ChangeAction.DELETE);
         change.setChangeDescription("Deleted Hotel Owner - Details:\nID: " + hotelOwnerId);
@@ -92,6 +98,7 @@ public class AdminService {
 
         admin.getChanges().add(change);
         adminRepo.save(admin);
+        log.info("Hotel Owner deleted successfully.");
     }
 
     public List<UserDTO> findAllHotelOwners() {

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bvcott.booking.converter.user.UserConverter;
@@ -16,10 +18,12 @@ import lombok.AllArgsConstructor;
 
 @Service @AllArgsConstructor
 public class UserService {
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepo;
     private final UserConverter userConverter;
 
     public List<UserDTO> findAll() {
+        log.info("findAll triggered.");
         return userRepo
             .findAll()
             .stream()
@@ -28,6 +32,7 @@ public class UserService {
     }
 
     public UserDTO findUserById(UUID id) {
+        log.info("findUserById triggered with ID: {}", id);
         User user = userRepo
             .findById(id)
             .orElseThrow(() -> new UserNotFoundException("User not found with the provided id: " + id));
