@@ -75,6 +75,30 @@ public class AdminService {
         return (HotelOwnerDTO) userConverter.toDto(persistedHotelOwner);
     }
 
+    public void deleteHotelOwner(UUID adminId, UUID hotelOwnerId) {
+        User foundAdmin = userRepo
+            .findById(adminId)
+            .orElseThrow(() -> new UserNotFoundException("User not found with the provided ID"));
+
+        if(!(foundAdmin instanceof Administrator)) {
+            throw new ActionNotAllowedException("Only Administrators can delete Hotel Owners");
+        }
+
+        User hotelOwnerToDelete = userRepo
+            .findById(hotelOwnerId)
+            .orElseThrow(() -> new UserNotFoundException("Hotel Owner not found. Can't delete"));
+
+        userRepo.delete(hotelOwnerToDelete);
+
+        Change change = new Change();
+        change.setAction(ChangeAction.DELETE);
+        change.setChangeDescription("Deleted Hotel Owner - Details:\nID: " + hotelOwnerId);
+        change.setChangeTime(LocalDateTime.now());
+
+        Administrator admin = (Administrator) foundAdmin;
+        admin.getChanges().add(change);
+    }
+
     public List<UserDTO> findAllHotelOwners() {
         return userRepo
             .findByUserType(HotelOwner.class)
