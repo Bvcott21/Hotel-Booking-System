@@ -21,6 +21,8 @@ import com.bvcott.booking.model.ChangeAction;
 import com.bvcott.booking.model.HotelOwner;
 import com.bvcott.booking.model.User;
 import com.bvcott.booking.repository.UserRepository;
+import com.bvcott.booking.repository.user.AdministratorRepository;
+import com.bvcott.booking.repository.user.HotelOwnerRepository;
 import com.bvcott.booking.utility.RandomStringGenerator;
 
 import lombok.AllArgsConstructor;
@@ -29,6 +31,8 @@ import lombok.AllArgsConstructor;
 public class AdminService {
     private static final Logger log = LoggerFactory.getLogger(AdminService.class);
     private final UserRepository userRepo;
+    private final AdministratorRepository adminRepo;
+    private final HotelOwnerRepository hotelOwnerRepo;
     private final UserConverter userConverter;
     private final RandomStringGenerator passwordGenerator;
 
@@ -36,13 +40,9 @@ public class AdminService {
         log.info("createHotelOwner triggered with values ID: {} | dto: {}", adminId, dto);
         
         log.debug("checking if ID provided belongs to an admin");
-        User user = userRepo
+        Administrator admin = adminRepo
             .findById(adminId)
-            .orElseThrow(() -> new UserNotFoundException("Could not find user with the provided id: " + adminId));
-        
-        if(!(user instanceof Administrator)) {
-            throw new ActionNotAllowedException("Only Administrators can create new Hotel Owners");
-        }
+            .orElseThrow(() -> new UserNotFoundException("Could not find administrator with the provided id: " + adminId));
 
         log.debug("ID provided matches with Admin ID, creating Hotel Owner...");
         HotelOwner hotelOwnerToPersist = new HotelOwner();
@@ -67,22 +67,17 @@ public class AdminService {
         change.setChangeTime(LocalDateTime.now());
 
         log.debug("Successfully created change record, associating with appropriate administrator.");
-        Administrator admin = (Administrator) user;
         admin.getChanges().add(change);
-        userRepo.save(admin);
+        adminRepo.save(admin);
 
         log.info("Hotel owner succesfully created, returning Hotel Owner DTO");
         return (HotelOwnerDTO) userConverter.toDto(persistedHotelOwner);
     }
 
     public void deleteHotelOwner(UUID adminId, UUID hotelOwnerId) {
-        User foundAdmin = userRepo
+        Administrator admin = adminRepo
             .findById(adminId)
-            .orElseThrow(() -> new UserNotFoundException("User not found with the provided ID"));
-
-        if(!(foundAdmin instanceof Administrator)) {
-            throw new ActionNotAllowedException("Only Administrators can delete Hotel Owners");
-        }
+            .orElseThrow(() -> new UserNotFoundException("Admin not found with the provided ID"));
 
         User hotelOwnerToDelete = userRepo
             .findById(hotelOwnerId)
@@ -95,13 +90,13 @@ public class AdminService {
         change.setChangeDescription("Deleted Hotel Owner - Details:\nID: " + hotelOwnerId);
         change.setChangeTime(LocalDateTime.now());
 
-        Administrator admin = (Administrator) foundAdmin;
         admin.getChanges().add(change);
+        adminRepo.save(admin);
     }
 
     public List<UserDTO> findAllHotelOwners() {
-        return userRepo
-            .findByUserType(HotelOwner.class)
+        return hotelOwnerRepo
+            .findAll()
             .stream()
             .map(userConverter::toDto)
             .collect(Collectors.toList());
