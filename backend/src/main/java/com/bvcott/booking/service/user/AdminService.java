@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bvcott.booking.converter.user.UserConverter;
+import com.bvcott.booking.dto.user.AdminDTO;
 import com.bvcott.booking.dto.user.UserDTO;
 import com.bvcott.booking.dto.user.hotelOwner.HotelOwnerCreateDTO;
 import com.bvcott.booking.dto.user.hotelOwner.HotelOwnerDTO;
@@ -102,11 +103,19 @@ public class AdminService {
     }
 
     public List<UserDTO> findAllHotelOwners() {
+        log.info("findAllHotelOwners triggered");
         return hotelOwnerRepo
             .findAll()
             .stream()
             .map(userConverter::toDto)
             .collect(Collectors.toList());
     }
+
+    public UserDTO findById(UUID adminId) {
+        log.info("findById triggered with ID {}", adminId);
+        return userConverter.toDto(adminRepo
+            .findById(adminId)
+            .orElseThrow(() -> new UserNotFoundException("Admin not found with the provided ID")));
+    } 
 
 }

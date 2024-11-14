@@ -5,21 +5,22 @@ import java.util.List;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.bvcott.booking.config.GlobalFeeConfig;
 import com.bvcott.booking.model.Administrator;
 import com.bvcott.booking.model.HotelOwner;
 import com.bvcott.booking.repository.UserRepository;
+import com.bvcott.booking.repository.config.GlobalFeeConfigRepository;
 
-@Component
+import lombok.AllArgsConstructor;
+
+@Component @AllArgsConstructor
 public class DataLoader implements CommandLineRunner {
     private final UserRepository userRepo;
-
-    public DataLoader(UserRepository userRepo) {
-        this.userRepo = userRepo;
-    }
+    private final GlobalFeeConfigRepository feeRepo;
 
     @Override
     public void run(String... args) throws Exception {
-        if(userRepo.count() == 0) {
+        if(userRepo.count() == 0 && feeRepo.count() == 0) {
             prepopulateData();
         }
     }
@@ -60,5 +61,12 @@ public class DataLoader implements CommandLineRunner {
         owner4.setPassword("ownerPass4");
 
         userRepo.saveAll(List.of(admin1, admin2, admin3, admin4, owner1, owner2, owner3, owner4));
+
+        GlobalFeeConfig fee = new GlobalFeeConfig();
+        fee.setBaseCharge(100);
+        fee.setChargePerRoom(10);
+        fee.setTransactionFee(5);
+
+        feeRepo.save(fee);
     }
 }
