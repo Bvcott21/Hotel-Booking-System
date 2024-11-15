@@ -3,7 +3,7 @@ package com.bvcott.booking.converter.change;
 import org.springframework.stereotype.Component;
 
 import com.bvcott.booking.dto.change.ChangeDTO;
-import com.bvcott.booking.model.Change;
+import com.bvcott.booking.model.user.Change;
 
 @Component
 public class ChangeConverter {

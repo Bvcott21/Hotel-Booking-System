@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.bvcott.booking.converter.user.UserConverter;
 import com.bvcott.booking.dto.user.UserDTO;
-import com.bvcott.booking.exception.user.UserNotFoundException;
-import com.bvcott.booking.model.User;
+import com.bvcott.booking.exception.general.ResourceNotFoundException;
+import com.bvcott.booking.model.user.User;
 import com.bvcott.booking.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
@@ -35,7 +35,7 @@ public class UserService {
         log.info("findUserById triggered with ID: {}", id);
         User user = userRepo
             .findById(id)
-            .orElseThrow(() -> new UserNotFoundException("User not found with the provided id: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with the provided id: " + id));
         return userConverter.toDto(user);
     }
 

@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.bvcott.booking.exception.general.ResourceNotFoundException;
 import com.bvcott.booking.exception.user.ActionNotAllowedException;
-import com.bvcott.booking.exception.user.UserNotFoundException;
 import com.bvcott.booking.exception.user.UserTypeNotAllowedException;
 import com.bvcott.booking.exception.user.UserTypeNotRecognizedException;
 
@@ -15,14 +15,14 @@ import lombok.Getter;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return exceptionHandler(ex, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(UserTypeNotAllowedException.class)
     public ResponseEntity<Object> handleUserTypeNotAllowedException(UserTypeNotAllowedException ex) {
         return exceptionHandler(ex, HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex) {
-        return exceptionHandler(ex, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UserTypeNotRecognizedException.class)

@@ -1,4 +1,4 @@
-package com.bvcott.booking.model;
+package com.bvcott.booking.model.user;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

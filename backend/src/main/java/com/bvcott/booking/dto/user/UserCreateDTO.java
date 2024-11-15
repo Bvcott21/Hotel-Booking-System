@@ -2,7 +2,7 @@ package com.bvcott.booking.dto.user;
 
 import java.util.UUID;
 
-import com.bvcott.booking.model.UserType;
+import com.bvcott.booking.model.user.UserType;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -3,7 +3,7 @@ package com.bvcott.booking.dto.change;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.bvcott.booking.model.ChangeAction;
+import com.bvcott.booking.model.user.ChangeAction;
 
 import lombok.Builder;
 import lombok.Data;

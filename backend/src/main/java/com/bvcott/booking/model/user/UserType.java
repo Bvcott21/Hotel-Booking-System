@@ -1,4 +1,4 @@
-package com.bvcott.booking.model;
+package com.bvcott.booking.model.user;
 
 public enum UserType {
     ADMIN,

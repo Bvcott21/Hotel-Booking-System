@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +25,7 @@ public class GlobalFeeConfigController {
         return ResponseEntity.ok(feeService.getCurrentFees(adminId));
     }
 
-    @PostMapping
+    @PutMapping
     public ResponseEntity<GlobalFeeConfigDTO> updateFees(
         @RequestParam UUID adminId,
         @RequestBody GlobalFeeConfigDTO dto) {

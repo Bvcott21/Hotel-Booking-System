@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import com.bvcott.booking.config.GlobalFeeConfig;
 import com.bvcott.booking.converter.config.GlobalFeeConfigConverter;
 import com.bvcott.booking.dto.config.GlobalFeeConfigDTO;
-import com.bvcott.booking.exception.user.UserNotFoundException;
-import com.bvcott.booking.model.Administrator;
-import com.bvcott.booking.model.Change;
-import com.bvcott.booking.model.ChangeAction;
+import com.bvcott.booking.exception.general.ResourceNotFoundException;
+import com.bvcott.booking.model.user.Administrator;
+import com.bvcott.booking.model.user.Change;
+import com.bvcott.booking.model.user.ChangeAction;
 import com.bvcott.booking.repository.config.GlobalFeeConfigRepository;
 import com.bvcott.booking.repository.user.AdministratorRepository;
 
@@ -30,7 +30,7 @@ public class GlobalFeeConfigService {
         log.info("getCurrentFees triggered, retrieving...");
         adminRepo
             .findById(adminId)
-            .orElseThrow(() -> new UserNotFoundException("Admin not found, can't update Global Fees"));
+            .orElseThrow(() -> new ResourceNotFoundException("Admin not found, can't update Global Fees"));
 
         GlobalFeeConfig currentFees = feeRepo.findById(1).get();
         return feeConverter.toDto(currentFees);
@@ -42,7 +42,7 @@ public class GlobalFeeConfigService {
         
         Administrator admin = adminRepo
             .findById(adminId)
-            .orElseThrow(() -> new UserNotFoundException("Admin not found, can't update Global Fees"));
+            .orElseThrow(() -> new ResourceNotFoundException("Admin not found, can't update Global Fees"));
 
         if(currentFees.getBaseCharge() != newFees.getBaseCharge()) {
             log.debug("Base charge has changed.");

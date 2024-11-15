@@ -10,17 +10,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bvcott.booking.converter.user.UserConverter;
-import com.bvcott.booking.dto.user.AdminDTO;
 import com.bvcott.booking.dto.user.UserDTO;
 import com.bvcott.booking.dto.user.hotelOwner.HotelOwnerCreateDTO;
 import com.bvcott.booking.dto.user.hotelOwner.HotelOwnerDTO;
+import com.bvcott.booking.exception.general.ResourceNotFoundException;
 import com.bvcott.booking.exception.user.ActionNotAllowedException;
-import com.bvcott.booking.exception.user.UserNotFoundException;
-import com.bvcott.booking.model.Administrator;
-import com.bvcott.booking.model.Change;
-import com.bvcott.booking.model.ChangeAction;
-import com.bvcott.booking.model.HotelOwner;
-import com.bvcott.booking.model.User;
+import com.bvcott.booking.model.user.Administrator;
+import com.bvcott.booking.model.user.Change;
+import com.bvcott.booking.model.user.ChangeAction;
+import com.bvcott.booking.model.user.HotelOwner;
+import com.bvcott.booking.model.user.User;
 import com.bvcott.booking.repository.UserRepository;
 import com.bvcott.booking.repository.user.AdministratorRepository;
 import com.bvcott.booking.repository.user.HotelOwnerRepository;
@@ -43,7 +42,7 @@ public class AdminService {
         log.debug("checking if ID provided belongs to an admin");
         Administrator admin = adminRepo
             .findById(adminId)
-            .orElseThrow(() -> new UserNotFoundException("Could not find administrator with the provided id: " + adminId));
+            .orElseThrow(() -> new ResourceNotFoundException("Could not find administrator with the provided id: " + adminId));
 
         log.debug("ID provided matches with Admin ID, creating Hotel Owner...");
         HotelOwner hotelOwnerToPersist = new HotelOwner();
@@ -81,12 +80,12 @@ public class AdminService {
         log.debug("Finding admin by ID...");
         Administrator admin = adminRepo
             .findById(adminId)
-            .orElseThrow(() -> new UserNotFoundException("Admin not found with the provided ID"));
+            .orElseThrow(() -> new ResourceNotFoundException("Admin not found with the provided ID"));
 
             log.debug("Admin found, finding Hotel Owner by ID...");
         User hotelOwnerToDelete = userRepo
             .findById(hotelOwnerId)
-            .orElseThrow(() -> new UserNotFoundException("Hotel Owner not found. Can't delete"));
+            .orElseThrow(() -> new ResourceNotFoundException("Hotel Owner not found. Can't delete"));
 
         log.debug("Hotel owner found, deleting...");
         userRepo.delete(hotelOwnerToDelete);
@@ -115,7 +114,7 @@ public class AdminService {
         log.info("findById triggered with ID {}", adminId);
         return userConverter.toDto(adminRepo
             .findById(adminId)
-            .orElseThrow(() -> new UserNotFoundException("Admin not found with the provided ID")));
+            .orElseThrow(() -> new ResourceNotFoundException("Admin not found with the provided ID")));
     } 
 
 }

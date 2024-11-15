@@ -11,11 +11,11 @@ import com.bvcott.booking.dto.user.AdminDTO;
 import com.bvcott.booking.dto.user.UserDTO;
 import com.bvcott.booking.dto.user.hotelOwner.HotelOwnerDTO;
 import com.bvcott.booking.exception.user.UserTypeNotRecognizedException;
-import com.bvcott.booking.model.Administrator;
-import com.bvcott.booking.model.Change;
-import com.bvcott.booking.model.HotelOwner;
-import com.bvcott.booking.model.User;
-import com.bvcott.booking.model.UserType;
+import com.bvcott.booking.model.user.Administrator;
+import com.bvcott.booking.model.user.Change;
+import com.bvcott.booking.model.user.HotelOwner;
+import com.bvcott.booking.model.user.User;
+import com.bvcott.booking.model.user.UserType;
 
 import lombok.AllArgsConstructor;
 
