@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.bvcott.booking.converter.change.ChangeConverter;
+import com.bvcott.booking.converter.hotel.HotelConverter;
 import com.bvcott.booking.dto.change.ChangeDTO;
 import com.bvcott.booking.dto.user.AdminDTO;
 import com.bvcott.booking.dto.user.UserDTO;
@@ -22,6 +23,7 @@ import lombok.AllArgsConstructor;
 @Component @AllArgsConstructor
 public class UserConverter {
     private final ChangeConverter changeConverter;
+    private final HotelConverter hotelConverter;
     
     public UserDTO toDto(User entity) {
         switch(entity.getClass().getSimpleName()) {
@@ -50,6 +52,11 @@ public class UserConverter {
                     .username(hotelOwner.getUsername())
                     .password(hotelOwner.getPassword())
                     .balance(hotelOwner.getBalance())
+                    .hotels(hotelOwner
+                        .getHotels()
+                        .stream()
+                        .map(hotelConverter::toDto)
+                        .collect(Collectors.toList()))
                     .build();
             default:
                 throw new UserTypeNotRecognizedException("User type: " + entity.getClass().getSimpleName() + " not recognized");

@@ -31,7 +31,7 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void prepopulateData() {
-        // Create 4 Administrator instances
+           // Create Administrators
         Administrator admin1 = new Administrator();
         admin1.setUsername("admin1");
         admin1.setPassword("adminPass1");
@@ -48,32 +48,35 @@ public class DataLoader implements CommandLineRunner {
         admin4.setUsername("admin4");
         admin4.setPassword("adminPass4");
 
-        // Create 4 HotelOwner instances
+        // Create HotelOwners
         HotelOwner owner1 = new HotelOwner();
         owner1.setUsername("hotelOwner1");
         owner1.setPassword("ownerPass1");
+        owner1.setBalance(1500.0);
 
         HotelOwner owner2 = new HotelOwner();
         owner2.setUsername("hotelOwner2");
         owner2.setPassword("ownerPass2");
+        owner2.setBalance(2000.0);
 
         HotelOwner owner3 = new HotelOwner();
         owner3.setUsername("hotelOwner3");
         owner3.setPassword("ownerPass3");
+        owner3.setBalance(2500.0);
 
         HotelOwner owner4 = new HotelOwner();
         owner4.setUsername("hotelOwner4");
         owner4.setPassword("ownerPass4");
+        owner4.setBalance(3000.0);
 
-        userRepo.saveAll(List.of(admin1, admin2, admin3, admin4, owner1, owner2, owner3, owner4));
-
+        // Create Global Fee Config
         GlobalFeeConfig fee = new GlobalFeeConfig();
         fee.setBaseCharge(100);
         fee.setChargePerRoom(10);
         fee.setTransactionFee(5);
-
         feeRepo.save(fee);
 
+        // Create Hotels
         List<Hotel> hotels = List.of(
                 createHotel("Ocean Breeze Resort", "Relax by the sea with stunning ocean views", "101", "Beachside", "90210", "Miami", "USA",
                         List.of(Facility.WIFI, Facility.POOL, Facility.AIR_CONDITIONING)),
@@ -105,9 +108,16 @@ public class DataLoader implements CommandLineRunner {
                         List.of(Facility.SPA, Facility.WIFI, Facility.POOL)),
                 createHotel("Skyline View Hotel", "Unmatched cityscape views from every room", "200", "Skyscraper Blvd", "55555", "Hong Kong", "China",
                         List.of(Facility.AIR_CONDITIONING, Facility.BAR, Facility.TV))
-            );
+        );
 
-            hotelRepo.saveAll(hotels);
+        // Assign hotels to owners
+        owner1.getHotels().addAll(hotels.subList(0, 4)); // First 4 hotels
+        owner2.getHotels().addAll(hotels.subList(4, 8)); // Next 4 hotels
+        owner3.getHotels().addAll(hotels.subList(8, 12)); // Next 4 hotels
+        owner4.getHotels().addAll(hotels.subList(12, 15)); // Last 3 hotels
+
+        // Save HotelOwners (with cascading to hotels)
+        userRepo.saveAll(List.of(owner1, owner2, owner3, owner4));
     }
 
     private Hotel createHotel(String name, String description, String streetNumber1, String streetNumber2, String postCode,
