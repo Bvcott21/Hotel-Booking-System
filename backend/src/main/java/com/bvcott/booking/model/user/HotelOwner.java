@@ -17,4 +17,8 @@ public class HotelOwner extends User {
     
     @OneToMany(cascade = CascadeType.ALL) 
     List<Hotel> hotels = new ArrayList<>();
+
+    public void addHotel(Hotel hotel) {
+        hotels.add(hotel);
+    }
 }

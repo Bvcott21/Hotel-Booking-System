@@ -57,7 +57,7 @@ public class HotelConverter {
         return entity;
     }
 
-    private Facility mapStringToFacility(String displayName) {
+    public Facility mapStringToFacility(String displayName) {
         for (Facility facility :Facility.values()) {
             if (facility.getDisplayName().equalsIgnoreCase(displayName)) {
                 return facility;

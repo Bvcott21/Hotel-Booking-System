@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bvcott.booking.dto.hotel.HotelCreateDTO;
 import com.bvcott.booking.dto.hotel.HotelDTO;
 import com.bvcott.booking.service.hotel.HotelService;
 
@@ -35,7 +36,7 @@ public class HotelController {
     @PostMapping
     public ResponseEntity<HotelDTO> createHotel(
         @RequestParam UUID hotelOwnerId,
-        @RequestBody HotelDTO hotel) {
+        @RequestBody HotelCreateDTO hotel) {
             return ResponseEntity.ok(hotelService.createHotel(hotelOwnerId, hotel));
         }
 }

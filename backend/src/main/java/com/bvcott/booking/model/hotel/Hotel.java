@@ -45,4 +45,8 @@ public class Hotel {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<HotelRoom> rooms = new ArrayList<>();
+
+    public void addHotelRoom(HotelRoom room) {
+        rooms.add(room);
+    }
 }
