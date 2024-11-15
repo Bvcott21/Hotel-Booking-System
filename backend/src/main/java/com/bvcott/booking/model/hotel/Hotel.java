@@ -6,12 +6,14 @@ import java.util.UUID;
 
 import com.bvcott.booking.model.address.Address;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -38,5 +40,9 @@ public class Hotel {
     
     @NotNull(message = "Hotel address must be provided")
     @Embedded private Address address;
+    
     @ElementCollection private List<Facility> facilities = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<HotelRoom> rooms = new ArrayList<>();
 }

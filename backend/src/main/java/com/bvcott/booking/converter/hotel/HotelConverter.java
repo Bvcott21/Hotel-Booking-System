@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 @Component @AllArgsConstructor
 public class HotelConverter {
     private final AddressConverter addressConverter;
+    private final HotelRoomConverter roomConverter;
 
     public HotelDTO toDto(Hotel entity) {
         return HotelDTO.builder()
@@ -26,6 +27,11 @@ public class HotelConverter {
                 .getFacilities()
                 .stream()
                 .map(Facility::getDisplayName)
+                .collect(Collectors.toList()))
+            .hotelRooms(entity
+                .getRooms()
+                .stream()
+                .map(roomConverter::toDto)
                 .collect(Collectors.toList()))
             .build();
     }
@@ -42,6 +48,11 @@ public class HotelConverter {
             .getFacilities()
             .stream()
             .map(this::mapStringToFacility)
+            .collect(Collectors.toList()));
+        entity.setRooms(dto
+            .getHotelRooms()
+            .stream()
+            .map(roomConverter::toEntity)
             .collect(Collectors.toList()));
         return entity;
     }
