@@ -6,7 +6,10 @@ import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bvcott.booking.dto.hotel.HotelDTO;
@@ -28,4 +31,11 @@ public class HotelController {
     public ResponseEntity<HotelDTO> getHotelById(@PathVariable UUID hotelId) {
         return ResponseEntity.ok(hotelService.findById(hotelId));
     }
+
+    @PostMapping
+    public ResponseEntity<HotelDTO> createHotel(
+        @RequestParam UUID hotelOwnerId,
+        @RequestBody HotelDTO hotel) {
+            return ResponseEntity.ok(hotelService.createHotel(hotelOwnerId, hotel));
+        }
 }

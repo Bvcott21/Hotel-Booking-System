@@ -13,6 +13,7 @@ public class HotelDTO {
     private UUID hotelId;
     private String name;
     private String description;
+    private double rating;
     private AddressDTO address;
     private List<String> facilities;
 }

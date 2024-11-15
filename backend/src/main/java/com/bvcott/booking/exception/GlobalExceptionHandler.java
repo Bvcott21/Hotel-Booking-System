@@ -10,6 +10,7 @@ import com.bvcott.booking.exception.user.ActionNotAllowedException;
 import com.bvcott.booking.exception.user.UserTypeNotAllowedException;
 import com.bvcott.booking.exception.user.UserTypeNotRecognizedException;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.Getter;
 
 @ControllerAdvice
@@ -18,6 +19,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex) {
         return exceptionHandler(ex, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
+        return exceptionHandler(ex, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserTypeNotAllowedException.class)

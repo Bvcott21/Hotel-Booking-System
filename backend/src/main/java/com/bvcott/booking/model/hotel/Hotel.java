@@ -12,14 +12,31 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity @Data
 public class Hotel {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID hotelId;
+
+    @NotBlank(message = "Hotel name must not be blank")
+    @Size(min = 5, max = 35, message = "Hotel name must be between 5 and 35 characters")
     private String name;
+
+    @NotBlank(message = "Hotel description must not be blank")
+    @Size(max = 5000, message = "Hotel description must not exceed 5000 characters.")
     private String description;
+
+    @Min(value = 0, message = "Hotel rating must be at least 0")
+    @Max(value = 5, message = "Hotel rating must not exceed 5")
+    private double rating;
+    
+    @NotNull(message = "Hotel address must be provided")
     @Embedded private Address address;
     @ElementCollection private List<Facility> facilities = new ArrayList<>();
 }

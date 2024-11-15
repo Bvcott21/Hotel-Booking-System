@@ -2,7 +2,6 @@ package com.bvcott.booking.converter.hotel;
 
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bvcott.booking.converter.address.AddressConverter;
@@ -14,13 +13,14 @@ import lombok.AllArgsConstructor;
 
 @Component @AllArgsConstructor
 public class HotelConverter {
-    @Autowired private final AddressConverter addressConverter;
+    private final AddressConverter addressConverter;
 
     public HotelDTO toDto(Hotel entity) {
         return HotelDTO.builder()
             .hotelId(entity.getHotelId())
             .name(entity.getName())
             .description(entity.getDescription())
+            .rating(entity.getRating())
             .address(addressConverter.toDto(entity.getAddress()))
             .facilities(entity
                 .getFacilities()
@@ -36,6 +36,7 @@ public class HotelConverter {
         entity.setHotelId(dto.getHotelId());
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
+        entity.setRating(dto.getRating());
         entity.setAddress(addressConverter.toEntity(dto.getAddress()));
         entity.setFacilities(dto
             .getFacilities()
