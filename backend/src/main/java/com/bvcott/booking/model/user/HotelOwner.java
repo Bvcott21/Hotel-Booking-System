@@ -21,4 +21,8 @@ public class HotelOwner extends User {
     public void addHotel(Hotel hotel) {
         hotels.add(hotel);
     }
+
+    public void removeHotel(Hotel hotel) {
+        hotels.remove(hotel);
+    }
 }

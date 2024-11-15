@@ -13,6 +13,7 @@ import com.bvcott.booking.converter.hotel.HotelConverter;
 import com.bvcott.booking.dto.hotel.HotelCreateDTO;
 import com.bvcott.booking.dto.hotel.HotelDTO;
 import com.bvcott.booking.exception.general.ResourceNotFoundException;
+import com.bvcott.booking.exception.user.ActionNotAllowedException;
 import com.bvcott.booking.model.hotel.Hotel;
 import com.bvcott.booking.model.hotel.HotelRoom;
 import com.bvcott.booking.model.hotel.HotelRoomType;
@@ -62,7 +63,7 @@ public class HotelService {
             .map(hotelConverter::mapStringToFacility)
             .collect(Collectors.toList()));
         
-        log.debug("Creating {} single rooms with price {}", newHotel.getNumberOfSingleRooms(), newHotel.getPriceOfSingleRooms());
+        log.debug("Creating {} single rooms with price {}...", newHotel.getNumberOfSingleRooms(), newHotel.getPriceOfSingleRooms());
         for(int i = 0; i < newHotel.getNumberOfSingleRooms(); i++) {
             HotelRoom room = new HotelRoom();
             room.setRoomType(HotelRoomType.SINGLE);
@@ -70,7 +71,7 @@ public class HotelService {
             hotel.addHotelRoom(room);
         }
 
-        log.debug("Creating {} double rooms with price {}", newHotel.getNumberOfDoubleRooms(), newHotel.getPriceOfDoubleRooms());
+        log.debug("Creating {} double rooms with price {}...", newHotel.getNumberOfDoubleRooms(), newHotel.getPriceOfDoubleRooms());
         for(int i = 0; i < newHotel.getNumberOfDoubleRooms(); i++) {
             HotelRoom room = new HotelRoom();
             room.setRoomType(HotelRoomType.DOUBLE);
@@ -78,7 +79,7 @@ public class HotelService {
             hotel.addHotelRoom(room);
         }
 
-        log.debug("Creating {} suite rooms with price {}", newHotel.getNumberOfSuiteRooms(), newHotel.getPriceOfSuiteRooms());
+        log.debug("Creating {} suite rooms with price {}...", newHotel.getNumberOfSuiteRooms(), newHotel.getPriceOfSuiteRooms());
         for(int i = 0; i < newHotel.getNumberOfSuiteRooms(); i++) {
             HotelRoom room = new HotelRoom();
             room.setRoomType(HotelRoomType.SUITE);
@@ -86,7 +87,7 @@ public class HotelService {
             hotel.addHotelRoom(room);
         }
 
-        log.debug("Creating {} family rooms with price {}", newHotel.getNumberOfFamilyRooms(), newHotel.getPriceOfFamilyRooms());
+        log.debug("Creating {} family rooms with price {}...", newHotel.getNumberOfFamilyRooms(), newHotel.getPriceOfFamilyRooms());
         for(int i = 0; i < newHotel.getNumberOfFamilyRooms(); i++) {
             HotelRoom room = new HotelRoom();
             room.setRoomType(HotelRoomType.FAMILY);
@@ -94,7 +95,7 @@ public class HotelService {
             hotel.addHotelRoom(room);
         }
 
-        log.debug("Creating {} deluxe rooms with price {}", newHotel.getNumberOfDeluxeRooms(), newHotel.getPriceOfDeluxeRooms());
+        log.debug("Creating {} deluxe rooms with price {}...", newHotel.getNumberOfDeluxeRooms(), newHotel.getPriceOfDeluxeRooms());
         for(int i = 0; i < newHotel.getNumberOfDeluxeRooms(); i++) {
             HotelRoom room = new HotelRoom();
             room.setRoomType(HotelRoomType.DELUXE);
@@ -110,5 +111,38 @@ public class HotelService {
         
         log.info("Hotel created successfully.");
         return hotelConverter.toDto(owner.getHotels().get(owner.getHotels().size() - 1));
+    }
+
+    public void deleteHotel(UUID hotelOwnerId, UUID hotelId) {
+        log.info("deleteHotel triggered with values - hotelOwnerId: {}, hotelId: {}", hotelOwnerId, hotelId);
+
+        log.debug("Finding hotel owner...");
+        HotelOwner owner = ownerRepo
+            .findById(hotelOwnerId)
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Hotel Owner with ID " + hotelOwnerId + " not found")
+            );
+        
+        log.debug("Hotel owner found, finding hotel...");
+
+        Hotel hotel = hotelRepo
+            .findById(hotelId)
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Hotel with ID " + hotelId + " not found")
+            );
+        
+        log.debug("Hotel found, checking if hotel is associated with owner...");
+        
+        if(owner.getHotels().contains(hotel)) {
+            log.debug("Hotel is associated with owner, deleting...");
+            owner.removeHotel(hotel);
+            owner = ownerRepo.save(owner);
+
+            hotelRepo.delete(hotel);
+            log.info("Hotel deleted successfully");
+        } else {
+            log.warn("Hotel is not associated with hotel owner, can't delete");
+            throw new ActionNotAllowedException("Can't delete an hotel that's not associated with you!");
+        }
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,5 +39,14 @@ public class HotelController {
         @RequestParam UUID hotelOwnerId,
         @RequestBody HotelCreateDTO hotel) {
             return ResponseEntity.ok(hotelService.createHotel(hotelOwnerId, hotel));
-        }
+    }
+
+    @DeleteMapping("/{hotelId}")
+    public ResponseEntity<Void> deleteHotel(
+        @RequestParam UUID hotelOwnerId,
+        @PathVariable UUID hotelId
+    ) {
+        hotelService.deleteHotel(hotelOwnerId, hotelId);
+        return ResponseEntity.noContent().build();
+    }
 }
