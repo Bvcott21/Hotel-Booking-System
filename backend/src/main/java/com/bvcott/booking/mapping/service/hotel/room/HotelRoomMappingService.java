@@ -1,14 +1,14 @@
-package com.bvcott.booking.converter.hotel;
+package com.bvcott.booking.mapping.service.hotel.room;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.bvcott.booking.dto.hotel.HotelRoomDTO;
 import com.bvcott.booking.model.hotel.HotelRoom;
 import com.bvcott.booking.model.hotel.HotelRoomType;
 
-@Component 
-public class HotelRoomConverter {
-    public HotelRoomDTO toDto(HotelRoom entity) {
+@Service
+public class HotelRoomMappingService {
+	public HotelRoomDTO toDto(HotelRoom entity) {
         return HotelRoomDTO.builder()
             .hotelRoomId(entity.getHotelRoomId())
             .roomType(entity.getRoomType().getHotelRoomType())
@@ -18,15 +18,17 @@ public class HotelRoomConverter {
             .checkout(entity.getCheckout())
             .build();
     }
-
-    public HotelRoom toEntity(HotelRoomDTO dto) {
+	
+	public HotelRoom toEntity(HotelRoomDTO dto) {
         HotelRoom entity = new HotelRoom();
+        
         entity.setHotelRoomId(dto.getHotelRoomId());
         entity.setRoomType(mapStringToHotelRoomType(dto.getRoomType()));
         entity.setPrice(dto.getPrice());
         entity.setAvailable(dto.isAvailable());
         entity.setCheckin(dto.getCheckin());
         entity.setCheckout(dto.getCheckout());
+        
         return entity;
     }
 

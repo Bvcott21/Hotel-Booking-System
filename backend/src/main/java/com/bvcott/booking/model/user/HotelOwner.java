@@ -10,11 +10,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity @Data @EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
 public class HotelOwner extends User {
     double balance;
     
+    public HotelOwner(String username, String password, double balance) {
+    	super(username, password);
+    	this.balance = balance;
+    }
     @OneToMany(cascade = CascadeType.ALL) 
     List<Hotel> hotels = new ArrayList<>();
 

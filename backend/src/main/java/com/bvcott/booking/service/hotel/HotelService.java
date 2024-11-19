@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.bvcott.booking.converter.address.AddressConverter;
 import com.bvcott.booking.converter.hotel.HotelConverter;
-import com.bvcott.booking.converter.hotel.HotelRoomConverter;
+import com.bvcott.booking.converter.hotel.facility.FacilityConverter;
+import com.bvcott.booking.converter.hotel.room.HotelRoomConverter;
 import com.bvcott.booking.dto.hotel.HotelCreateUpdateDTO;
 import com.bvcott.booking.dto.hotel.HotelDTO;
 import com.bvcott.booking.dto.hotel.HotelRoomDTO;
@@ -32,6 +33,7 @@ public class HotelService {
     private final HotelRepository hotelRepo;
     private final HotelRoomRepository hotelRoomRepo;
     private final HotelConverter hotelConverter;
+    private final FacilityConverter facilityConverter;
     private final HotelOwnerRepository ownerRepo;
     private final AddressConverter addressConverter;
     private final HotelRoomConverter roomConverter;
@@ -63,7 +65,7 @@ public class HotelService {
         hotel.setFacilities(newHotel
             .getFacilities()
             .stream()
-            .map(hotelConverter::mapStringToFacility)
+            .map(facilityConverter::mapStringToFacility)
             .collect(Collectors.toList()));
         
         log.debug("Creating {} single rooms with price {}...", newHotel.getNumberOfSingleRooms(), newHotel.getPriceOfSingleRooms());
@@ -164,7 +166,7 @@ public class HotelService {
         hotel.setDescription(dto.getDescription());
         hotel.setAddress(addressConverter.toEntity(dto.getAddress()));
         hotel.setFacilities(dto.getFacilities().stream()
-            .map(hotelConverter::mapStringToFacility)
+            .map(facilityConverter::mapStringToFacility)
             .collect(Collectors.toList()));
 
         log.debug("Updating hotel rooms...");

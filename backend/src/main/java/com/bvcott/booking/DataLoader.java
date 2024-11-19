@@ -1,6 +1,7 @@
 package com.bvcott.booking;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.boot.CommandLineRunner;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.bvcott.booking.config.GlobalFeeConfig;
 import com.bvcott.booking.model.address.Address;
+import com.bvcott.booking.model.booking.Booking;
 import com.bvcott.booking.model.hotel.Facility;
 import com.bvcott.booking.model.hotel.Hotel;
 import com.bvcott.booking.model.hotel.HotelRoom;
@@ -15,7 +17,9 @@ import com.bvcott.booking.model.hotel.HotelRoomType;
 import com.bvcott.booking.model.user.Administrator;
 import com.bvcott.booking.model.user.HotelOwner;
 import com.bvcott.booking.repository.UserRepository;
+import com.bvcott.booking.repository.booking.BookingRepository;
 import com.bvcott.booking.repository.config.GlobalFeeConfigRepository;
+import com.bvcott.booking.repository.hotel.HotelRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -23,6 +27,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class DataLoader implements CommandLineRunner {
     private final UserRepository userRepo;
+    private final HotelRepository hotelRepo;
+    private final BookingRepository bookingRepo;
     private final GlobalFeeConfigRepository feeRepo;
 
     @Override
@@ -34,42 +40,10 @@ public class DataLoader implements CommandLineRunner {
 
     private void prepopulateData() {
         // Create Administrators
-        Administrator admin1 = new Administrator();
-        admin1.setUsername("admin1");
-        admin1.setPassword("adminPass1");
+        List<Administrator> admins = createAdministrators();
 
-        Administrator admin2 = new Administrator();
-        admin2.setUsername("admin2");
-        admin2.setPassword("adminPass2");
-
-        Administrator admin3 = new Administrator();
-        admin3.setUsername("admin3");
-        admin3.setPassword("adminPass3");
-
-        Administrator admin4 = new Administrator();
-        admin4.setUsername("admin4");
-        admin4.setPassword("adminPass4");
-
-        // Create HotelOwners
-        HotelOwner owner1 = new HotelOwner();
-        owner1.setUsername("hotelOwner1");
-        owner1.setPassword("ownerPass1");
-        owner1.setBalance(1500.0);
-
-        HotelOwner owner2 = new HotelOwner();
-        owner2.setUsername("hotelOwner2");
-        owner2.setPassword("ownerPass2");
-        owner2.setBalance(2000.0);
-
-        HotelOwner owner3 = new HotelOwner();
-        owner3.setUsername("hotelOwner3");
-        owner3.setPassword("ownerPass3");
-        owner3.setBalance(2500.0);
-
-        HotelOwner owner4 = new HotelOwner();
-        owner4.setUsername("hotelOwner4");
-        owner4.setPassword("ownerPass4");
-        owner4.setBalance(3000.0);
+        // Create Hotel Owners
+        List<HotelOwner> hotelOwners = createHotelOwners();
 
         // Create Global Fee Config
         GlobalFeeConfig fee = new GlobalFeeConfig();
@@ -79,7 +53,46 @@ public class DataLoader implements CommandLineRunner {
         feeRepo.save(fee);
 
         // Create Hotels
-        List<Hotel> hotels = List.of(
+        List<Hotel> hotels = createHotels();
+
+        // Assign rooms to hotels
+        hotels.forEach(hotel -> hotel.setRooms(createHotelRooms()));
+
+        // Assign hotels to owners
+        assignHotelsToOwners(hotels, hotelOwners);
+
+        // Save HotelOwners (with cascading to hotels and rooms)
+        userRepo.saveAll(hotelOwners);
+        userRepo.saveAll(admins);
+
+        // Create Bookings
+        List<Booking> bookings = createBookingsForHotels(hotels);
+
+        // Save bookings
+        bookingRepo.saveAll(bookings);
+        hotelRepo.saveAll(hotels); // Persist updated hotels and rooms
+    }
+
+    private List<Administrator> createAdministrators() {
+        return List.of(
+            new Administrator("admin1", "adminPass1"),
+            new Administrator("admin2", "adminPass2"),
+            new Administrator("admin3", "adminPass3"),
+            new Administrator("admin4", "adminPass4")
+        );
+    }
+
+    private List<HotelOwner> createHotelOwners() {
+        return List.of(
+            new HotelOwner("hotelOwner1", "ownerPass1", 1500.0),
+            new HotelOwner("hotelOwner2", "ownerPass2", 2000.0),
+            new HotelOwner("hotelOwner3", "ownerPass3", 2500.0),
+            new HotelOwner("hotelOwner4", "ownerPass4", 3000.0)
+        );
+    }
+
+    private List<Hotel> createHotels() {
+        return List.of(
             createHotel("Ocean Breeze Resort", "Relax by the sea with stunning ocean views", "101", "Beachside", "90210", "Miami", "USA",
                     List.of(Facility.WIFI, Facility.POOL, Facility.AIR_CONDITIONING), 4.5),
             createHotel("Mountain Retreat Lodge", "Escape to the tranquility of the mountains", "55", "Alpine Way", "22345", "Aspen", "USA",
@@ -87,44 +100,63 @@ public class DataLoader implements CommandLineRunner {
             createHotel("Urban Paradise Hotel", "Luxurious stay in the heart of the city", "200", "Main Street", "10001", "New York", "USA",
                     List.of(Facility.BUSINESS_CENTER, Facility.RESTAURANT, Facility.BAR), 4.0),
             createHotel("Countryside Inn", "Cozy inn surrounded by beautiful countryside", "75", "Maple Drive", "33333", "Nashville", "USA",
-                    List.of(Facility.BREAKFAST_INCLUDED, Facility.NON_SMOKING_ROOMS), 4.3),
-            createHotel("Sunset Vista Hotel", "Experience breathtaking sunsets every evening", "34", "Sunset Blvd", "45678", "Los Angeles", "USA",
-                    List.of(Facility.AIRPORT_SHUTTLE, Facility.POOL, Facility.TV), 3.9),
-            createHotel("Royal Castle Suites", "A royal experience with luxurious rooms", "12", "Palace Road", "12345", "Edinburgh", "UK",
-                    List.of(Facility.SPA, Facility.GYM, Facility.ROOM_SERVICE), 4.8),
-            createHotel("Seaside Escape Hotel", "Comfortable and relaxing beachfront property", "88", "Ocean Drive", "54321", "Sydney", "Australia",
-                    List.of(Facility.POOL, Facility.WIFI, Facility.KITCHEN), 4.2),
-            createHotel("Central Business Hotel", "Conveniently located for business travelers", "300", "Downtown Ave", "67890", "Tokyo", "Japan",
-                    List.of(Facility.BUSINESS_CENTER, Facility.WIFI, Facility.NON_SMOKING_ROOMS), 4.6),
-            createHotel("Desert Oasis Hotel", "Luxury in the heart of the desert", "5", "Oasis Lane", "11223", "Dubai", "UAE",
-                    List.of(Facility.SPA, Facility.AIR_CONDITIONING, Facility.MINI_BAR), 4.7),
-            createHotel("Rainforest Resort", "Stay surrounded by lush rainforest", "67", "Rainforest Path", "66778", "Manaus", "Brazil",
-                    List.of(Facility.POOL, Facility.WIFI, Facility.CHILDREN_FACILITIES), 4.3),
-            createHotel("Historic Haven", "Experience history in this unique property", "1", "Old Town", "90001", "Rome", "Italy",
-                    List.of(Facility.RESTAURANT, Facility.NON_SMOKING_ROOMS, Facility.WIFI), 4.0),
-            createHotel("Arctic Chill Hotel", "A cool experience near the Arctic Circle", "10", "Iceberg Lane", "88888", "Reykjavik", "Iceland",
-                    List.of(Facility.AIR_CONDITIONING, Facility.TV, Facility.LAUNDRY), 3.8),
-            createHotel("Safari Adventure Lodge", "Explore the wild while staying in comfort", "99", "Savanna Road", "77123", "Nairobi", "Kenya",
-                    List.of(Facility.AIR_CONDITIONING, Facility.KITCHEN, Facility.BAR), 4.4),
-            createHotel("Island Paradise Hotel", "Exclusive private island stay", "101", "Paradise Cove", "56789", "Bali", "Indonesia",
-                    List.of(Facility.SPA, Facility.WIFI, Facility.POOL), 4.9),
-            createHotel("Skyline View Hotel", "Unmatched cityscape views from every room", "200", "Skyscraper Blvd", "55555", "Hong Kong", "China",
-                    List.of(Facility.AIR_CONDITIONING, Facility.BAR, Facility.TV), 4.1)
+                    List.of(Facility.BREAKFAST_INCLUDED, Facility.NON_SMOKING_ROOMS), 4.3)
         );
+    }
 
-        // Assign rooms to hotels
+    private void assignHotelsToOwners(List<Hotel> hotels, List<HotelOwner> owners) {
+        owners.get(0).getHotels().addAll(hotels.subList(0, 2));
+        owners.get(1).getHotels().addAll(hotels.subList(2, 4));
+    }
+
+    private List<HotelRoom> createHotelRooms() {
+        return List.of(
+            createHotelRoom(HotelRoomType.SINGLE, 100.0, true),
+            createHotelRoom(HotelRoomType.DOUBLE, 150.0, true),
+            createHotelRoom(HotelRoomType.SUITE, 300.0, false),
+            createHotelRoom(HotelRoomType.FAMILY, 250.0, true),
+            createHotelRoom(HotelRoomType.DELUXE, 200.0, false)
+        );
+    }
+
+    private HotelRoom createHotelRoom(HotelRoomType roomType, double price, boolean isAvailable) {
+        HotelRoom room = new HotelRoom();
+        room.setRoomType(roomType);
+        room.setPrice(price);
+        room.setAvailable(isAvailable);
+        room.setCheckin(isAvailable ? null : LocalDate.now().minusDays(5));
+        room.setCheckout(isAvailable ? null : LocalDate.now().plusDays(3));
+        return room;
+    }
+
+    private List<Booking> createBookingsForHotels(List<Hotel> hotels) {
+        List<Booking> bookings = new ArrayList<>();
+
         for (Hotel hotel : hotels) {
-            hotel.setRooms(createHotelRooms());
+            List<HotelRoom> availableRooms = hotel.getRooms().stream()
+                .filter(HotelRoom::isAvailable)
+                .limit(2) // Only 2 rooms per hotel are booked
+                .toList();
+
+            if (!availableRooms.isEmpty()) {
+                Booking booking = new Booking();
+                booking.setHotel(hotel);
+                booking.setRooms(availableRooms);
+                booking.setCheckin(LocalDate.now().plusDays(2));
+                booking.setCheckout(LocalDate.now().plusDays(5));
+                booking.setPrice(availableRooms.stream().mapToDouble(HotelRoom::getPrice).sum());
+
+                bookings.add(booking);
+
+                // Update room availability
+                availableRooms.forEach(room -> {
+                    room.setAvailable(false);
+                    room.setCheckin(booking.getCheckin());
+                    room.setCheckout(booking.getCheckout());
+                });
+            }
         }
-
-        // Assign hotels to owners
-        owner1.getHotels().addAll(hotels.subList(0, 4)); // First 4 hotels
-        owner2.getHotels().addAll(hotels.subList(4, 8)); // Next 4 hotels
-        owner3.getHotels().addAll(hotels.subList(8, 12)); // Next 4 hotels
-        owner4.getHotels().addAll(hotels.subList(12, 15)); // Last 3 hotels
-
-        // Save HotelOwners (with cascading to hotels and rooms)
-        userRepo.saveAll(List.of(admin1, admin2, admin3, admin4, owner1, owner2, owner3, owner4));
+        return bookings;
     }
 
     private Hotel createHotel(String name, String description, String streetNumber1, String streetNumber2, String postCode,
@@ -145,25 +177,5 @@ public class DataLoader implements CommandLineRunner {
         hotel.setFacilities(facilities);
 
         return hotel;
-    }
-
-    private List<HotelRoom> createHotelRooms() {
-        return List.of(
-            createHotelRoom(HotelRoomType.SINGLE, 100.0, true),
-            createHotelRoom(HotelRoomType.DOUBLE, 150.0, true),
-            createHotelRoom(HotelRoomType.SUITE, 300.0, false),
-            createHotelRoom(HotelRoomType.FAMILY, 250.0, true),
-            createHotelRoom(HotelRoomType.DELUXE, 200.0, false)
-        );
-    }
-
-    private HotelRoom createHotelRoom(HotelRoomType roomType, double price, boolean isAvailable) {
-        HotelRoom room = new HotelRoom();
-        room.setRoomType(roomType);
-        room.setPrice(price);
-        room.setAvailable(isAvailable);
-        room.setCheckin(isAvailable ? null : LocalDate.now().minusDays(5)); // Example: Room checked in 5 days ago if unavailable
-        room.setCheckout(isAvailable ? null : LocalDate.now().plusDays(3)); // Example: Room will be checked out in 3 days if unavailable
-        return room;
     }
 }
