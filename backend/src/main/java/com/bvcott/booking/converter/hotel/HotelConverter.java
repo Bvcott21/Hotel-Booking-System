@@ -1,8 +1,12 @@
 package com.bvcott.booking.converter.hotel;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.bvcott.booking.dto.hotel.HotelDTO;
+import com.bvcott.booking.dto.hotel.HotelOccupancyDTO;
+import com.bvcott.booking.dto.hotel.room.HotelRoomOccupancyDTO;
 import com.bvcott.booking.mapping.service.hotel.HotelMappingService;
 import com.bvcott.booking.model.hotel.Hotel;
 
@@ -20,6 +24,8 @@ public class HotelConverter {
     public Hotel toEntity(HotelDTO dto) {
         return hotelMappingService.toEntity(dto);
     }
-
     
+    public HotelOccupancyDTO toOccupancyDto(Hotel hotel, List<HotelRoomOccupancyDTO> roomOccupancy) {
+    	return hotelMappingService.toOccupancyDto(hotel, roomOccupancy);
+    }
 }

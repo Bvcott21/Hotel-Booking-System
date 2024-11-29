@@ -62,8 +62,8 @@ public class DataLoader implements CommandLineRunner {
         assignHotelsToOwners(hotels, hotelOwners);
 
         // Save HotelOwners (with cascading to hotels and rooms)
-        userRepo.saveAll(hotelOwners);
         userRepo.saveAll(admins);
+        userRepo.saveAll(hotelOwners);
 
         // Create Bookings
         List<Booking> bookings = createBookingsForHotels(hotels);

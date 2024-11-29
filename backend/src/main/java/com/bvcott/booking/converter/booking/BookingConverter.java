@@ -19,4 +19,8 @@ public class BookingConverter {
     public Booking toEntity(BookingDTO dto) {
         return bookingMappingService.toEntity(dto);
     }
+    
+    public BookingDTO toShallowDto(Booking booking) {
+    	return bookingMappingService.toShallowDto(booking);
+    }
 }

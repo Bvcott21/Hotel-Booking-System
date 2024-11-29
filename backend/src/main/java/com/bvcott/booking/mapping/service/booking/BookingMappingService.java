@@ -49,5 +49,15 @@ public class BookingMappingService {
         return entity;
     }
 	
+	public BookingDTO toShallowDto(Booking booking) {
+		return BookingDTO
+			.builder()
+			.bookingId(booking.getBookingId())
+			.checkin(booking.getCheckin())
+			.checkout(booking.getCheckout())
+			.price(booking.getPrice())
+			.build();
+	}
+	
 	
 }

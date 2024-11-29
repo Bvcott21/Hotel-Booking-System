@@ -14,7 +14,7 @@ import com.bvcott.booking.converter.hotel.facility.FacilityConverter;
 import com.bvcott.booking.converter.hotel.room.HotelRoomConverter;
 import com.bvcott.booking.dto.hotel.HotelCreateUpdateDTO;
 import com.bvcott.booking.dto.hotel.HotelDTO;
-import com.bvcott.booking.dto.hotel.HotelRoomDTO;
+import com.bvcott.booking.dto.hotel.room.HotelRoomDTO;
 import com.bvcott.booking.exception.general.ResourceNotFoundException;
 import com.bvcott.booking.exception.user.ActionNotAllowedException;
 import com.bvcott.booking.model.hotel.Hotel;

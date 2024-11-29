@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bvcott.booking.dto.hotel.HotelCreateUpdateDTO;
 import com.bvcott.booking.dto.hotel.HotelDTO;
-import com.bvcott.booking.dto.hotel.HotelRoomDTO;
+import com.bvcott.booking.dto.hotel.room.HotelRoomDTO;
 import com.bvcott.booking.service.hotel.HotelService;
 
 import lombok.AllArgsConstructor;
@@ -70,4 +70,6 @@ public class HotelController {
     ) {
         return ResponseEntity.ok(hotelService.updateHotelRoom(hotelOwnerId, hotelId, roomId, dto));
     }
+    
+    
 }

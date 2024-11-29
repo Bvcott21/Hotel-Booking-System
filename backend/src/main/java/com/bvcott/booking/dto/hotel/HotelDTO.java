@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.bvcott.booking.dto.address.AddressDTO;
+import com.bvcott.booking.dto.hotel.room.HotelRoomDTO;
 
 import lombok.Builder;
 import lombok.Data;

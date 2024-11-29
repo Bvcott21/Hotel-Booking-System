@@ -1,8 +1,11 @@
 package com.bvcott.booking.mapping.service.hotel.room;
 
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Service;
 
-import com.bvcott.booking.dto.hotel.HotelRoomDTO;
+import com.bvcott.booking.dto.hotel.room.HotelRoomDTO;
+import com.bvcott.booking.dto.hotel.room.HotelRoomOccupancyDTO;
 import com.bvcott.booking.model.hotel.HotelRoom;
 import com.bvcott.booking.model.hotel.HotelRoomType;
 
@@ -10,6 +13,7 @@ import com.bvcott.booking.model.hotel.HotelRoomType;
 public class HotelRoomMappingService {
 	public HotelRoomDTO toDto(HotelRoom entity) {
         return HotelRoomDTO.builder()
+            .hotelRoomId(entity.getHotelRoomId())
             .hotelRoomId(entity.getHotelRoomId())
             .roomType(entity.getRoomType().getHotelRoomType())
             .price(entity.getPrice())
@@ -39,5 +43,17 @@ public class HotelRoomMappingService {
             }
         }
         throw new IllegalArgumentException("Invalid room type: " + hotelRoomType);
+    }
+    
+    public HotelRoomOccupancyDTO toOccupancyDTO(HotelRoom room, boolean isOccupied, LocalDate checkin, LocalDate checkout) {
+    	return HotelRoomOccupancyDTO
+    		.builder()
+    		.hotelRoomId(room.getHotelRoomId())
+    		.roomType(room.getRoomType().name())
+    		.isOccupied(isOccupied)
+    		.checkin(checkin)
+    		.checkout(checkout)
+    		.build();
+    		
     }
 }

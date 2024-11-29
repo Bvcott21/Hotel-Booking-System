@@ -1,10 +1,13 @@
 package com.bvcott.booking.mapping.service.hotel;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.bvcott.booking.dto.hotel.HotelDTO;
+import com.bvcott.booking.dto.hotel.HotelOccupancyDTO;
+import com.bvcott.booking.dto.hotel.room.HotelRoomOccupancyDTO;
 import com.bvcott.booking.mapping.service.address.AddressMappingService;
 import com.bvcott.booking.mapping.service.hotel.facility.FacilityMappingService;
 import com.bvcott.booking.mapping.service.hotel.room.HotelRoomMappingService;
@@ -59,6 +62,15 @@ public class HotelMappingService {
             .collect(Collectors.toList()));
         return entity;
     }
+
+	public HotelOccupancyDTO toOccupancyDto(Hotel hotel, List<HotelRoomOccupancyDTO> roomOccupancyDtos) {
+		return HotelOccupancyDTO
+			.builder()
+			.hotelId(hotel.getHotelId())
+			.name(hotel.getName())
+			.roomOccupancy(roomOccupancyDtos)
+			.build();
+	}
 	
 	
 
