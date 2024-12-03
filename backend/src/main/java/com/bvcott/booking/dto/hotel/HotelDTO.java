@@ -15,6 +15,7 @@ public class HotelDTO {
     private String name;
     private String description;
     private double rating;
+    private double discount;
     private AddressDTO address;
     private List<String> facilities;
     private List<HotelRoomDTO> hotelRooms;

@@ -28,6 +28,7 @@ public class HotelMappingService {
 	            .name(entity.getName())
 	            .description(entity.getDescription())
 	            .rating(entity.getRating())
+	            .discount(entity.getDiscount())
 	            .address(addressMappingService.toDto(entity.getAddress()))
 	            .facilities(entity
 	                .getFacilities()
@@ -49,6 +50,7 @@ public class HotelMappingService {
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
         entity.setRating(dto.getRating());
+        entity.setDiscount(dto.getDiscount());
         entity.setAddress(addressMappingService.toEntity(dto.getAddress()));
         entity.setFacilities(dto
             .getFacilities()

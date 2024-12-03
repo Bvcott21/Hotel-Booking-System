@@ -14,6 +14,7 @@ import com.bvcott.booking.converter.hotel.facility.FacilityConverter;
 import com.bvcott.booking.converter.hotel.room.HotelRoomConverter;
 import com.bvcott.booking.dto.hotel.HotelCreateUpdateDTO;
 import com.bvcott.booking.dto.hotel.HotelDTO;
+import com.bvcott.booking.dto.hotel.HotelUpdateDiscountDTO;
 import com.bvcott.booking.dto.hotel.room.HotelRoomDTO;
 import com.bvcott.booking.exception.general.ResourceNotFoundException;
 import com.bvcott.booking.exception.user.ActionNotAllowedException;
@@ -234,6 +235,36 @@ public class HotelService {
             
         return roomConverter.toDto(persistedRoom);
     }
+    
+    public HotelDTO updateHotelDiscount(UUID hotelId, UUID hotelOwnerId, HotelUpdateDiscountDTO discountDto) {
+    	log.info("updateHotelDiscount triggered with values: hotelId - {}, hotelOwnerId - {}, discountDto - {}", hotelId, hotelOwnerId, discountDto);
+    	
+    	log.debug("Finding hotel by id...");
+    	
+    	Hotel foundHotel = hotelConverter.toEntity(findById(hotelId));
+    	log.debug("Hotel found, finding hotel owner...");
+    	
+    	HotelOwner foundHotelOwner = findHotelOwnerById(hotelOwnerId);
+    	log.debug("Hotel Owner found, checking if hotel is owned by the found owner...");
+    	
+    	if(!foundHotelOwner.getHotels().contains(foundHotel)) {
+    		throw new ActionNotAllowedException("Hotel owners can add discounts only to their own hotels!");
+    	}
+    	
+    	log.debug("Hotel does belong to owner, checking if discount value is within accepted range...");
+    	if(discountDto.getDiscount() > 10 || discountDto.getDiscount() < 0) {
+    		throw new ActionNotAllowedException("Discount must be between 0 and 10");
+    	}
+    	
+    	log.debug("Discount within accepted range, updating object.");
+    	foundHotel.setDiscount(discountDto.getDiscount());
+    	
+    	log.debug("Persisting change");
+    	Hotel updatedHotel = hotelRepo.save(foundHotel);
+    	
+    	log.info("Discount updated and persisted successfully.");
+    	return hotelConverter.toDto(updatedHotel);
+    }
 
     private HotelOwner findHotelOwnerById(UUID id) {
         return ownerRepo
@@ -283,4 +314,5 @@ public class HotelService {
             room.setPrice(newPrice);
         }
     }
+    
 }

@@ -320,15 +320,15 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="Tmhr6U4OH7aJCZtOByEt-22" value="Hotel" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-1208.5" y="-767" width="163" height="145" as="geometry">
+          <mxGeometry x="-1208.5" y="-767" width="163" height="168" as="geometry">
             <mxRectangle x="-1212" y="-767" width="63" height="26" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Tmhr6U4OH7aJCZtOByEt-23" value="&lt;div&gt;- UUID : hotelId&lt;/div&gt;- String : name&lt;div&gt;- String : description&lt;/div&gt;&lt;div&gt;- Address : address&lt;/div&gt;&lt;div&gt;- List&amp;lt;Facility&amp;gt; : facilities&lt;/div&gt;&lt;div&gt;- double : rating&lt;/div&gt;&lt;div&gt;- List&amp;lt;Room&amp;gt; : rooms&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Tmhr6U4OH7aJCZtOByEt-22" vertex="1">
-          <mxGeometry y="26" width="163" height="111" as="geometry" />
+        <mxCell id="Tmhr6U4OH7aJCZtOByEt-23" value="&lt;div&gt;- UUID : hotelId&lt;/div&gt;- String : name&lt;div&gt;- String : description&lt;/div&gt;&lt;div&gt;- Address : address&lt;/div&gt;&lt;div&gt;- List&amp;lt;Facility&amp;gt; : facilities&lt;/div&gt;&lt;div&gt;- double : rating&lt;/div&gt;&lt;div&gt;- double : discount&lt;/div&gt;&lt;div&gt;- List&amp;lt;Room&amp;gt; : rooms&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="Tmhr6U4OH7aJCZtOByEt-22" vertex="1">
+          <mxGeometry y="26" width="163" height="134" as="geometry" />
         </mxCell>
         <mxCell id="Tmhr6U4OH7aJCZtOByEt-24" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="Tmhr6U4OH7aJCZtOByEt-22" vertex="1">
-          <mxGeometry y="137" width="163" height="8" as="geometry" />
+          <mxGeometry y="160" width="163" height="8" as="geometry" />
         </mxCell>
         <mxCell id="Tmhr6U4OH7aJCZtOByEt-29" value="HotelRoom" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-1004" y="-666" width="154" height="148" as="geometry" />
@@ -413,7 +413,7 @@
         <mxCell id="Tmhr6U4OH7aJCZtOByEt-62" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="Tmhr6U4OH7aJCZtOByEt-60" vertex="1">
           <mxGeometry y="130" width="160" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="ait0ZE3EW1RlCNZiPDFE-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="Tmhr6U4OH7aJCZtOByEt-64" target="Tmhr6U4OH7aJCZtOByEt-29">
+        <mxCell id="ait0ZE3EW1RlCNZiPDFE-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="Tmhr6U4OH7aJCZtOByEt-64" target="Tmhr6U4OH7aJCZtOByEt-29" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="Tmhr6U4OH7aJCZtOByEt-64" value="Booking" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">

@@ -43,6 +43,10 @@ public class Hotel {
     @Embedded private Address address;
     
     @ElementCollection private List<Facility> facilities = new ArrayList<>();
+    
+    @Min(value = 0, message = "Hotel discount must be at least 0")
+    @Max(value = 10, message = "Hotel discount must not exceed 10")
+    private double discount;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<HotelRoom> rooms = new ArrayList<>();

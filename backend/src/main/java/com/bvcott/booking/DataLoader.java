@@ -94,13 +94,13 @@ public class DataLoader implements CommandLineRunner {
     private List<Hotel> createHotels() {
         return List.of(
             createHotel("Ocean Breeze Resort", "Relax by the sea with stunning ocean views", "101", "Beachside", "90210", "Miami", "USA",
-                    List.of(Facility.WIFI, Facility.POOL, Facility.AIR_CONDITIONING), 4.5),
+                    List.of(Facility.WIFI, Facility.POOL, Facility.AIR_CONDITIONING), 4.5, 0),
             createHotel("Mountain Retreat Lodge", "Escape to the tranquility of the mountains", "55", "Alpine Way", "22345", "Aspen", "USA",
-                    List.of(Facility.WIFI, Facility.GYM, Facility.SPA), 4.7),
+                    List.of(Facility.WIFI, Facility.GYM, Facility.SPA), 4.7, 0),
             createHotel("Urban Paradise Hotel", "Luxurious stay in the heart of the city", "200", "Main Street", "10001", "New York", "USA",
-                    List.of(Facility.BUSINESS_CENTER, Facility.RESTAURANT, Facility.BAR), 4.0),
+                    List.of(Facility.BUSINESS_CENTER, Facility.RESTAURANT, Facility.BAR), 4.0, 4.3),
             createHotel("Countryside Inn", "Cozy inn surrounded by beautiful countryside", "75", "Maple Drive", "33333", "Nashville", "USA",
-                    List.of(Facility.BREAKFAST_INCLUDED, Facility.NON_SMOKING_ROOMS), 4.3)
+                    List.of(Facility.BREAKFAST_INCLUDED, Facility.NON_SMOKING_ROOMS), 4.3, 9.0)
         );
     }
 
@@ -160,11 +160,12 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private Hotel createHotel(String name, String description, String streetNumber1, String streetNumber2, String postCode,
-                              String city, String country, List<Facility> facilities, double rating) {
+                              String city, String country, List<Facility> facilities, double rating, double discount) {
         Hotel hotel = new Hotel();
         hotel.setName(name);
         hotel.setDescription(description);
         hotel.setRating(rating);
+        hotel.setDiscount(discount);
 
         Address address = new Address();
         address.setStreetNumber1(streetNumber1);
