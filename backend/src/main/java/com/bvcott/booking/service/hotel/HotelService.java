@@ -265,6 +265,14 @@ public class HotelService {
     	log.info("Discount updated and persisted successfully.");
     	return hotelConverter.toDto(updatedHotel);
     }
+    
+    public List<HotelDTO> findAllByCity(String city) {
+    	return hotelRepo
+    		.findByAddressCityIgnoreCase(city)
+    		.stream()
+    		.map(hotelConverter::toDto)
+    		.collect(Collectors.toList());
+    }
 
     private HotelOwner findHotelOwnerById(UUID id) {
         return ownerRepo

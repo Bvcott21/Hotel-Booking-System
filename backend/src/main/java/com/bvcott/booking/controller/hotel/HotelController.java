@@ -36,6 +36,11 @@ public class HotelController {
     public ResponseEntity<HotelDTO> getHotelById(@PathVariable UUID hotelId) {
         return ResponseEntity.ok(hotelService.findById(hotelId));
     }
+    
+    @GetMapping("/by-city")
+    public ResponseEntity<List<HotelDTO>> getAllHotelsByCity(@RequestParam String city) {
+    	return ResponseEntity.ok(hotelService.findAllByCity(city));
+    }
 
     @PostMapping
     public ResponseEntity<HotelDTO> createHotel(
