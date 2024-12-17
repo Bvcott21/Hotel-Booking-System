@@ -18,4 +18,7 @@ public interface BookingRepository extends JpaRepository<Booking, UUID>{
     	@Param("startDate") LocalDate startDate,
     	@Param("endDate") LocalDate endDate
     );
+
+	// Method to find all bookings associated with a specific hotel ID
+	List<Booking> findByHotel_HotelId(UUID hotelId);
 }

@@ -3,23 +3,21 @@ package com.bvcott.booking.service.user;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+import com.bvcott.booking.repository.booking.BookingRepository;
+import com.bvcott.booking.repository.hotel.HotelRepository;
+import com.bvcott.booking.repository.hotel.HotelRoomRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bvcott.booking.converter.user.UserConverter;
-import com.bvcott.booking.dto.user.UserDTO;
 import com.bvcott.booking.dto.user.hotelOwner.HotelOwnerCreateDTO;
-import com.bvcott.booking.dto.user.hotelOwner.HotelOwnerDTO;
 import com.bvcott.booking.exception.general.ResourceNotFoundException;
 import com.bvcott.booking.exception.user.ActionNotAllowedException;
 import com.bvcott.booking.model.user.Administrator;
 import com.bvcott.booking.model.user.Change;
 import com.bvcott.booking.model.user.ChangeAction;
 import com.bvcott.booking.model.user.HotelOwner;
-import com.bvcott.booking.model.user.User;
 import com.bvcott.booking.repository.UserRepository;
 import com.bvcott.booking.repository.user.AdministratorRepository;
 import com.bvcott.booking.repository.user.HotelOwnerRepository;
@@ -33,10 +31,12 @@ public class AdminService {
     private final UserRepository userRepo;
     private final AdministratorRepository adminRepo;
     private final HotelOwnerRepository hotelOwnerRepo;
-    private final UserConverter userConverter;
+    private final HotelRepository hotelRepo;
+    private final HotelRoomRepository hotelRoomRepo;
+    private final BookingRepository bookingRepo;
     private final RandomStringGenerator passwordGenerator;
 
-    public HotelOwnerDTO createHotelOwner(UUID adminId, HotelOwnerCreateDTO dto) {
+    public HotelOwner createHotelOwner(UUID adminId, HotelOwnerCreateDTO dto) {
         log.info("createHotelOwner triggered with values ID: {} | dto: {}", adminId, dto);
         
         log.debug("checking if ID provided belongs to an admin");
@@ -58,7 +58,7 @@ public class AdminService {
         hotelOwnerToPersist.setBalance(dto.getBalance());
 
         log.debug("All values checked and assigned, persisting Hotel Owner...");
-        User persistedHotelOwner = userRepo.save(hotelOwnerToPersist);
+        HotelOwner persistedHotelOwner = hotelOwnerRepo.save(hotelOwnerToPersist);
 
         log.debug("Creating new change log for admin-associated record...");
         Change change = new Change();
@@ -70,8 +70,8 @@ public class AdminService {
         admin.getChanges().add(change);
         adminRepo.save(admin);
 
-        log.info("Hotel owner succesfully created, returning Hotel Owner DTO");
-        return (HotelOwnerDTO) userConverter.toDto(persistedHotelOwner);
+        log.info("Hotel owner succesfully created, returning created Hotel Owner");
+        return persistedHotelOwner;
     }
 
     public void deleteHotelOwner(UUID adminId, UUID hotelOwnerId) {
@@ -83,11 +83,25 @@ public class AdminService {
             .orElseThrow(() -> new ResourceNotFoundException("Admin not found with the provided ID"));
 
             log.debug("Admin found, finding Hotel Owner by ID...");
-        User hotelOwnerToDelete = userRepo
+        HotelOwner hotelOwnerToDelete = hotelOwnerRepo
             .findById(hotelOwnerId)
             .orElseThrow(() -> new ResourceNotFoundException("Hotel Owner not found. Can't delete"));
 
-        log.debug("Hotel owner found, deleting...");
+        log.debug("Hotel owner found, deleting associated hotels...");
+        hotelOwnerToDelete
+                .getHotels()
+                        .forEach(hotel -> {
+                            log.debug("Deleting associated bookings for hotel: {}", hotel.getHotelId());
+                            bookingRepo.deleteAll(bookingRepo.findByHotel_HotelId(hotel.getHotelId()));
+
+                            log.debug("Deleting associated hotel rooms...");
+                            hotelRoomRepo.deleteAll(hotel.getRooms());
+
+                            log.debug("Deleting hotel...");
+                            hotelRepo.delete(hotel);
+                        });
+
+        log.debug("Deteling hotel owner...");
         userRepo.delete(hotelOwnerToDelete);
 
         log.debug("Hotel owner deleted successfully, logging activity on Administrator...");
@@ -96,25 +110,22 @@ public class AdminService {
         change.setChangeDescription("Deleted Hotel Owner - Details:\nID: " + hotelOwnerId);
         change.setChangeTime(LocalDateTime.now());
 
+
         admin.getChanges().add(change);
         adminRepo.save(admin);
-        log.info("Hotel Owner deleted successfully.");
+        log.debug("Change logged to admin.");
     }
 
-    public List<UserDTO> findAllHotelOwners() {
+    public List<HotelOwner> findAllHotelOwners() {
         log.info("findAllHotelOwners triggered");
-        return hotelOwnerRepo
-            .findAll()
-            .stream()
-            .map(userConverter::toDto)
-            .collect(Collectors.toList());
+        return hotelOwnerRepo.findAll();
     }
 
-    public UserDTO findById(UUID adminId) {
+    public Administrator findById(UUID adminId) {
         log.info("findById triggered with ID {}", adminId);
-        return userConverter.toDto(adminRepo
+        return adminRepo
             .findById(adminId)
-            .orElseThrow(() -> new ResourceNotFoundException("Admin not found with the provided ID")));
+            .orElseThrow(() -> new ResourceNotFoundException("Admin not found with the provided ID"));
     } 
 
 }

@@ -2,6 +2,8 @@ package com.bvcott.booking.model.user;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +18,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "BOOKING_SYSTEM_USER")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "@type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Administrator.class, name = "admin"),
+        @JsonSubTypes.Type(value = HotelOwner.class, name = "hotel_owner")
+})
 public abstract class User {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID userId;

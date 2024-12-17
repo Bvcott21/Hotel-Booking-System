@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bvcott.booking.model.hotel.Hotel;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -21,7 +22,8 @@ public class HotelOwner extends User {
     	super(username, password);
     	this.balance = balance;
     }
-    @OneToMany(cascade = CascadeType.ALL) 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JsonManagedReference
     List<Hotel> hotels = new ArrayList<>();
 
     public void addHotel(Hotel hotel) {
