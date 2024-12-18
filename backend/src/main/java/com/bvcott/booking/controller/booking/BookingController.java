@@ -3,6 +3,7 @@ package com.bvcott.booking.controller.booking;
 import java.util.List;
 import java.util.UUID;
 
+import com.bvcott.booking.model.booking.Booking;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,16 +22,16 @@ public class BookingController {
     private final BookingService bookingService;
     
     @GetMapping
-    public ResponseEntity<List<BookingDTO>> findAllBookings() {
+    public ResponseEntity<List<Booking>> findAllBookings() {
         return ResponseEntity.ok(bookingService.findAll());
     }
 
     @GetMapping("/{bookingId}")
-    public ResponseEntity<BookingDTO> findBookingById(@PathVariable UUID bookingId) {
+    public ResponseEntity<Booking> findBookingById(@PathVariable UUID bookingId) {
         return ResponseEntity.ok(bookingService.findById(bookingId));
     }
 
     @PostMapping
-    public ResponseEntity<BookingDTO> createBooking() {return null;}
+    public ResponseEntity<Booking> createBooking() {return null;}
 
 }

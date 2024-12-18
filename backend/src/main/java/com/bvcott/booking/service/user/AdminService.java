@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.bvcott.booking.dto.user.hotelOwner.HotelOwnerCreateDTO;
 import com.bvcott.booking.repository.booking.BookingRepository;
 import com.bvcott.booking.repository.hotel.HotelRepository;
 import com.bvcott.booking.repository.hotel.HotelRoomRepository;
@@ -11,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bvcott.booking.dto.user.hotelOwner.HotelOwnerCreateDTO;
 import com.bvcott.booking.exception.general.ResourceNotFoundException;
 import com.bvcott.booking.exception.user.ActionNotAllowedException;
 import com.bvcott.booking.model.user.Administrator;
