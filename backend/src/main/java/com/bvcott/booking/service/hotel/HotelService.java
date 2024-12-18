@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bvcott.booking.converter.address.AddressConverter;
-import com.bvcott.booking.converter.hotel.HotelConverter;
 import com.bvcott.booking.converter.hotel.facility.FacilityConverter;
 import com.bvcott.booking.converter.hotel.room.HotelRoomConverter;
 import com.bvcott.booking.dto.hotel.HotelCreateUpdateDTO;
@@ -33,28 +32,23 @@ public class HotelService {
     private static final Logger log = LoggerFactory.getLogger(HotelService.class);
     private final HotelRepository hotelRepo;
     private final HotelRoomRepository hotelRoomRepo;
-    private final HotelConverter hotelConverter;
     private final FacilityConverter facilityConverter;
     private final HotelOwnerRepository ownerRepo;
     private final AddressConverter addressConverter;
     private final HotelRoomConverter roomConverter;
 
-    public List<HotelDTO> findAll() {
+    public List<Hotel> findAll() {
+        return hotelRepo.findAll();
+    }
+
+    public Hotel findById(UUID id) {
         return hotelRepo
-            .findAll()
-            .stream()
-            .map(hotelConverter::toDto)
-            .collect(Collectors.toList());
-    }
-
-    public HotelDTO findById(UUID id) {
-        return hotelConverter.toDto(hotelRepo
             .findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Could not find Hotel with the provided ID")));
+            .orElseThrow(() -> new ResourceNotFoundException("Could not find Hotel with the provided ID"));
     }
 
-    public HotelDTO createHotel(UUID hotelOwnerId, HotelCreateUpdateDTO newHotel) {
-        log.info("createHotel triggered with values: onwerId: {} - DTO: {}", hotelOwnerId, newHotel);
+    public Hotel createHotel(UUID hotelOwnerId, HotelCreateUpdateDTO newHotel) {
+        log.info("createHotel triggered with values: ownerId: {} - DTO: {}", hotelOwnerId, newHotel);
         HotelOwner owner = findHotelOwnerById(hotelOwnerId);
         
         log.debug("Hotel owner found, creating hotel...");
@@ -116,7 +110,7 @@ public class HotelService {
         log.debug("Hotel persisted succesfully");
         
         log.info("Hotel created successfully.");
-        return hotelConverter.toDto(owner.getHotels().get(owner.getHotels().size() - 1));
+        return owner.getHotels().get(owner.getHotels().size() - 1);
     }
 
     public void deleteHotel(UUID hotelOwnerId, UUID hotelId) {
@@ -148,7 +142,7 @@ public class HotelService {
         }
     }
 
-    public HotelDTO updateHotel(UUID hotelOwnerId, UUID hotelId, HotelCreateUpdateDTO dto) {
+    public Hotel updateHotel(UUID hotelOwnerId, UUID hotelId, HotelCreateUpdateDTO dto) {
         log.info("updateHotel triggered with values: hotelOwnerId {}, hotelId: {}, dto: {}", hotelOwnerId, hotelId, dto);
 
         log.debug("Finding Hotel Owner by ID...");
@@ -181,11 +175,11 @@ public class HotelService {
         hotel = hotelRepo.save(hotel);
 
         log.info("Hotel updated successfully.");
-        return hotelConverter.toDto(hotel);
+        return hotel;
     }
 
-    public HotelRoomDTO updateHotelRoom(UUID hotelOwnerId, UUID hotelId, UUID hotelRoomId, HotelRoomDTO dto) {
-        log.info("updateHotelRoom triggered with values: hotelOwnerId {}, hotelId: {}, hotelRoomId: {}, dto: {}", hotelRoomId, hotelId, hotelRoomId, dto);
+    public HotelRoom updateHotelRoom(UUID hotelOwnerId, UUID hotelId, UUID hotelRoomId, HotelRoom roomWithNewDetails) {
+        log.info("updateHotelRoom triggered with values: hotelOwnerId {}, hotelId: {}, hotelRoomId: {}, dto: {}", hotelRoomId, hotelId, hotelRoomId, roomWithNewDetails);
 
         log.debug("Finding hotel owner by ID...");
         HotelOwner owner = findHotelOwnerById(hotelOwnerId);
@@ -211,12 +205,11 @@ public class HotelService {
         }
 
         log.debug("Room is associated with hotel, updating...");
-        HotelRoom updatedRoom = roomConverter.toEntity(dto); 
-        room.setPrice(updatedRoom.getPrice());
-        room.setRoomType(updatedRoom.getRoomType());
-        room.setCheckin(updatedRoom.getCheckin());
-        room.setCheckout(updatedRoom.getCheckout());
-        room.setAvailable(updatedRoom.isAvailable());
+        room.setPrice(roomWithNewDetails.getPrice());
+        room.setRoomType(roomWithNewDetails.getRoomType());
+        room.setCheckin(roomWithNewDetails.getCheckin());
+        room.setCheckout(roomWithNewDetails.getCheckout());
+        room.setAvailable(roomWithNewDetails.isAvailable());
         
         log.debug("values updated, persisting...");
         owner = ownerRepo.save(owner);
@@ -233,15 +226,15 @@ public class HotelService {
                 .findFirst())
             .get();
             
-        return roomConverter.toDto(persistedRoom);
+        return persistedRoom;
     }
     
-    public HotelDTO updateHotelDiscount(UUID hotelId, UUID hotelOwnerId, HotelUpdateDiscountDTO discountDto) {
-    	log.info("updateHotelDiscount triggered with values: hotelId - {}, hotelOwnerId - {}, discountDto - {}", hotelId, hotelOwnerId, discountDto);
+    public Hotel updateHotelDiscount(UUID hotelId, UUID hotelOwnerId, HotelUpdateDiscountDTO discountDto) {
+    	log.info("updateHotelDiscount triggered with values: hotelId - {}, hotelOwnerId - {}, discount - {}", hotelId, hotelOwnerId, discountDto);
     	
     	log.debug("Finding hotel by id...");
     	
-    	Hotel foundHotel = hotelConverter.toEntity(findById(hotelId));
+    	Hotel foundHotel = findById(hotelId);
     	log.debug("Hotel found, finding hotel owner...");
     	
     	HotelOwner foundHotelOwner = findHotelOwnerById(hotelOwnerId);
@@ -263,15 +256,12 @@ public class HotelService {
     	Hotel updatedHotel = hotelRepo.save(foundHotel);
     	
     	log.info("Discount updated and persisted successfully.");
-    	return hotelConverter.toDto(updatedHotel);
+    	return updatedHotel;
     }
     
-    public List<HotelDTO> findAllByCity(String city) {
+    public List<Hotel> findAllByCity(String city) {
     	return hotelRepo
-    		.findByAddressCityIgnoreCase(city)
-    		.stream()
-    		.map(hotelConverter::toDto)
-    		.collect(Collectors.toList());
+    		.findByAddressCityIgnoreCase(city);
     }
 
     private HotelOwner findHotelOwnerById(UUID id) {

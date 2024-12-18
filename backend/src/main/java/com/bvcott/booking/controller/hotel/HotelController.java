@@ -3,6 +3,8 @@ package com.bvcott.booking.controller.hotel;
 import java.util.List;
 import java.util.UUID;
 
+import com.bvcott.booking.model.hotel.Hotel;
+import com.bvcott.booking.model.hotel.HotelRoom;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bvcott.booking.dto.hotel.HotelCreateUpdateDTO;
-import com.bvcott.booking.dto.hotel.HotelDTO;
 import com.bvcott.booking.dto.hotel.HotelUpdateDiscountDTO;
-import com.bvcott.booking.dto.hotel.room.HotelRoomDTO;
 import com.bvcott.booking.service.hotel.HotelService;
 
 import lombok.AllArgsConstructor;
@@ -28,22 +28,22 @@ public class HotelController {
     private final HotelService hotelService;
 
     @GetMapping
-    public ResponseEntity<List<HotelDTO>> getAllHotels() {
+    public ResponseEntity<List<Hotel>> getAllHotels() {
         return ResponseEntity.ok(hotelService.findAll());
     }
 
     @GetMapping("/{hotelId}")
-    public ResponseEntity<HotelDTO> getHotelById(@PathVariable UUID hotelId) {
+    public ResponseEntity<Hotel> getHotelById(@PathVariable UUID hotelId) {
         return ResponseEntity.ok(hotelService.findById(hotelId));
     }
     
     @GetMapping("/by-city")
-    public ResponseEntity<List<HotelDTO>> getAllHotelsByCity(@RequestParam String city) {
+    public ResponseEntity<List<Hotel>> getAllHotelsByCity(@RequestParam String city) {
     	return ResponseEntity.ok(hotelService.findAllByCity(city));
     }
 
     @PostMapping
-    public ResponseEntity<HotelDTO> createHotel(
+    public ResponseEntity<Hotel> createHotel(
         @RequestParam UUID hotelOwnerId,
         @RequestBody HotelCreateUpdateDTO hotel) {
             return ResponseEntity.ok(hotelService.createHotel(hotelOwnerId, hotel));
@@ -59,7 +59,7 @@ public class HotelController {
     }
 
     @PutMapping("/{hotelId}")
-    public ResponseEntity<HotelDTO> updateHotel(
+    public ResponseEntity<Hotel> updateHotel(
         @RequestParam UUID hotelOwnerId,
         @PathVariable UUID hotelId,
         @RequestBody HotelCreateUpdateDTO hotel
@@ -68,17 +68,17 @@ public class HotelController {
     }
 
     @PutMapping("/room/{roomId}")
-    public ResponseEntity<HotelRoomDTO> updateHotelRoom(
+    public ResponseEntity<HotelRoom> updateHotelRoom(
         @RequestParam UUID hotelOwnerId,
         @RequestParam UUID hotelId,
         @PathVariable UUID roomId,
-        @RequestBody HotelRoomDTO dto
+        @RequestBody HotelRoom room
     ) {
-        return ResponseEntity.ok(hotelService.updateHotelRoom(hotelOwnerId, hotelId, roomId, dto));
+        return ResponseEntity.ok(hotelService.updateHotelRoom(hotelOwnerId, hotelId, roomId, room));
     }
     
     @PutMapping("/discount/{hotelId}")
-    public ResponseEntity<HotelDTO> updateHotelDiscount(
+    public ResponseEntity<Hotel> updateHotelDiscount(
     		@PathVariable UUID hotelId,
     		@RequestParam UUID hotelOwnerId,
     		@RequestBody HotelUpdateDiscountDTO dto) {

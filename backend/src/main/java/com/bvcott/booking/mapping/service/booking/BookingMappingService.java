@@ -32,32 +32,5 @@ public class BookingMappingService {
 	            .build();
 	}
 	
-	public Booking toEntity(BookingDTO dto) {
-        Booking entity = new Booking();
-
-        entity.setBookingId(dto.getBookingId());
-        entity.setHotel(hotelMappingService.toEntity(dto.getHotel()));
-        entity.setRooms(dto
-            .getRooms()
-            .stream()
-            .map(roomMappingService::toEntity)
-            .collect(Collectors.toList()));
-        entity.setCheckin(dto.getCheckin());
-        entity.setCheckout(dto.getCheckout());
-        entity.setPrice(dto.getPrice());
-        
-        return entity;
-    }
-	
-	public BookingDTO toShallowDto(Booking booking) {
-		return BookingDTO
-			.builder()
-			.bookingId(booking.getBookingId())
-			.checkin(booking.getCheckin())
-			.checkout(booking.getCheckout())
-			.price(booking.getPrice())
-			.build();
-	}
-	
 	
 }

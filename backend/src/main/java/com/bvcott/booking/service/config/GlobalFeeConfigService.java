@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bvcott.booking.config.GlobalFeeConfig;
-import com.bvcott.booking.converter.config.GlobalFeeConfigConverter;
-import com.bvcott.booking.dto.config.GlobalFeeConfigDTO;
 import com.bvcott.booking.exception.general.ResourceNotFoundException;
 import com.bvcott.booking.model.user.Administrator;
 import com.bvcott.booking.model.user.Change;
@@ -24,21 +22,19 @@ public class GlobalFeeConfigService {
     private final Logger log = LoggerFactory.getLogger(GlobalFeeConfigService.class);
     private final GlobalFeeConfigRepository feeRepo;
     private final AdministratorRepository adminRepo;
-    private final GlobalFeeConfigConverter feeConverter;
 
-    public GlobalFeeConfigDTO getCurrentFees(UUID adminId) {
+    public GlobalFeeConfig getCurrentFees(UUID adminId) {
         log.info("getCurrentFees triggered, retrieving...");
         adminRepo
             .findById(adminId)
             .orElseThrow(() -> new ResourceNotFoundException("Admin not found, can't update Global Fees"));
 
-        GlobalFeeConfig currentFees = feeRepo.findById(1).get();
-        return feeConverter.toDto(currentFees);
+        return feeRepo.findById(1).get();
     }
 
-    public GlobalFeeConfigDTO updateFees(UUID adminId, GlobalFeeConfigDTO newFees) {
-        log.info("updateFees triggered with values adminId: {}, newFees: {}", newFees);
-        GlobalFeeConfigDTO currentFees = getCurrentFees(adminId);
+    public GlobalFeeConfig updateFees(UUID adminId, GlobalFeeConfig newFees) {
+        log.info("updateFees triggered with values adminId: {}, newFees: {}", adminId, newFees);
+        GlobalFeeConfig currentFees = getCurrentFees(adminId);
         
         Administrator admin = adminRepo
             .findById(adminId)
@@ -58,7 +54,7 @@ public class GlobalFeeConfigService {
         }
 
         log.debug("Persisting changes...");
-        feeRepo.save(feeConverter.toEntity(currentFees));
+        currentFees = feeRepo.save(currentFees);
 
         log.debug("logging change to admin");
         Change change = new Change();
