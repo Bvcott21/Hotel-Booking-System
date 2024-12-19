@@ -3,13 +3,11 @@ package com.bvcott.booking.controller.booking;
 import java.util.List;
 import java.util.UUID;
 
+import com.bvcott.booking.dto.booking.CreateBookingAndTransactionDTO;
 import com.bvcott.booking.model.booking.Booking;
+import com.bvcott.booking.model.payment.BookingTransaction;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.bvcott.booking.dto.booking.BookingDTO;
 import com.bvcott.booking.service.booking.BookingService;
@@ -32,6 +30,10 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<Booking> createBooking() {return null;}
+    public ResponseEntity<BookingTransaction> createBooking(
+            @RequestParam UUID customerId,
+            @RequestBody CreateBookingAndTransactionDTO dto) {
+        return ResponseEntity.ok(bookingService.createBookings(customerId, dto));
+    }
 
 }

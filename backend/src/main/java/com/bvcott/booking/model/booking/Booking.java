@@ -8,12 +8,10 @@ import java.util.UUID;
 import com.bvcott.booking.model.hotel.Hotel;
 import com.bvcott.booking.model.hotel.HotelRoom;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import com.bvcott.booking.model.payment.BookingTransaction;
+import com.bvcott.booking.model.user.Customer;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -22,10 +20,10 @@ public class Booking {
         @Id @GeneratedValue(strategy = GenerationType.AUTO)
         private UUID bookingId;
 
-        @ManyToOne
+        @ManyToOne @JsonBackReference
         private Hotel hotel;
 
-        @ManyToMany
+        @ManyToMany @JsonBackReference
         private List<HotelRoom> rooms = new ArrayList<>();
 
         @NotNull
@@ -36,4 +34,10 @@ public class Booking {
 
         @NotNull
         private double price;
+
+        @ManyToOne @JsonBackReference
+        private Customer customer;
+
+        @ManyToOne(cascade = CascadeType.ALL) @JsonBackReference
+        private BookingTransaction bookingTransaction;
 }

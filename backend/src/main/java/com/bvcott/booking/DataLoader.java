@@ -1,12 +1,19 @@
 package com.bvcott.booking;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.bvcott.booking.model.payment.BookingTransaction;
 import com.bvcott.booking.model.payment.CardDetails;
 import com.bvcott.booking.model.payment.PaymentDetails;
+import com.bvcott.booking.model.payment.TransactionStatus;
 import com.bvcott.booking.model.user.Customer;
+import com.bvcott.booking.repository.payment.TransactionRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +40,7 @@ public class DataLoader implements CommandLineRunner {
     private final HotelRepository hotelRepo;
     private final BookingRepository bookingRepo;
     private final GlobalFeeConfigRepository feeRepo;
+    private final TransactionRepository transactionRepo;
 
     @Override
     public void run(String... args) throws Exception {
@@ -73,7 +81,7 @@ public class DataLoader implements CommandLineRunner {
         userRepo.saveAll(customers);
 
         // Create Bookings
-        List<Booking> bookings = createBookingsForHotels(hotels);
+        List<Booking> bookings = createBookingsForHotels(hotels, customers);
 
         // Save bookings
         bookingRepo.saveAll(bookings);
@@ -213,33 +221,54 @@ public class DataLoader implements CommandLineRunner {
         return room;
     }
 
-    private List<Booking> createBookingsForHotels(List<Hotel> hotels) {
+    private List<Booking> createBookingsForHotels(List<Hotel> hotels, List<Customer> customers) {
         List<Booking> bookings = new ArrayList<>();
+        int customerIndex = 0;
 
         for (Hotel hotel : hotels) {
+            // Fetch available rooms
             List<HotelRoom> availableRooms = hotel.getRooms().stream()
-                .filter(HotelRoom::isAvailable)
-                .limit(2) // Only 2 rooms per hotel are booked
-                .toList();
+                    .filter(HotelRoom::isAvailable)
+                    .collect(Collectors.toList());
 
-            if (!availableRooms.isEmpty()) {
+            // Assign rooms to customers in a round-robin manner
+            for (HotelRoom room : availableRooms) {
+                Customer customer = customers.get(customerIndex % customers.size());
+
+                // Create Booking
                 Booking booking = new Booking();
                 booking.setHotel(hotel);
-                booking.setRooms(availableRooms);
+                booking.setRooms(Collections.singletonList(room));
                 booking.setCheckin(LocalDate.now().plusDays(2));
                 booking.setCheckout(LocalDate.now().plusDays(5));
-                booking.setPrice(availableRooms.stream().mapToDouble(HotelRoom::getPrice).sum());
+                booking.setPrice(room.getPrice());
+                booking.setCustomer(customer);
 
+                // Mark the room as unavailable
+                room.setAvailable(false);
+
+                // Add booking to customer
+                customer.addBooking(booking);
                 bookings.add(booking);
 
-                // Update room availability
-                availableRooms.forEach(room -> {
-                    room.setAvailable(false);
-                    room.setCheckin(booking.getCheckin());
-                    room.setCheckout(booking.getCheckout());
-                });
+                // Create BookingTransaction
+                BookingTransaction transaction = new BookingTransaction();
+                transaction.setBookings(Collections.singletonList(booking));
+                transaction.setCreatedAt(LocalDateTime.now());
+                transaction.setStatus(TransactionStatus.SUCCESS);
+                transaction.setPaymentDetails(customer.getPaymentDetails().get(0)); // Assuming a payment method exists
+                customer.addTransaction(transaction);
+
+                // Link booking to transaction
+                booking.setBookingTransaction(transaction);
+
+                customerIndex++;
             }
         }
+
+        // Save all customers, cascading to bookings and transactions
+        userRepo.saveAll(customers);
+
         return bookings;
     }
 
