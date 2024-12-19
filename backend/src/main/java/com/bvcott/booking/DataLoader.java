@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bvcott.booking.model.payment.CardDetails;
+import com.bvcott.booking.model.payment.PaymentDetails;
+import com.bvcott.booking.model.user.Customer;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -45,6 +48,9 @@ public class DataLoader implements CommandLineRunner {
         // Create Hotel Owners
         List<HotelOwner> hotelOwners = createHotelOwners();
 
+        // Create customers
+        List<Customer> customers = createCustomers();
+
         // Create Global Fee Config
         GlobalFeeConfig fee = new GlobalFeeConfig();
         fee.setBaseCharge(100);
@@ -64,6 +70,7 @@ public class DataLoader implements CommandLineRunner {
         // Save HotelOwners (with cascading to hotels and rooms)
         userRepo.saveAll(admins);
         userRepo.saveAll(hotelOwners);
+        userRepo.saveAll(customers);
 
         // Create Bookings
         List<Booking> bookings = createBookingsForHotels(hotels);
@@ -83,11 +90,54 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private List<HotelOwner> createHotelOwners() {
+        PaymentDetails paymentDetails1 = new PaymentDetails();
+        PaymentDetails paymentDetails2 = new PaymentDetails();
+        PaymentDetails paymentDetails3 = new PaymentDetails();
+        PaymentDetails paymentDetails4 = new PaymentDetails();
+        PaymentDetails paymentDetails5 = new PaymentDetails();
+        PaymentDetails paymentDetails6 = new PaymentDetails();
+
+        HotelOwner hotelOwner1 = new HotelOwner("hotelOwner1", "ownerPass1", 1500.0, List.of(paymentDetails1, paymentDetails2));
+        HotelOwner hotelOwner2 = new HotelOwner("hotelOwner2", "ownerPass2", 2000.0, List.of(paymentDetails3, paymentDetails4));
+        HotelOwner hotelOwner3 = new HotelOwner("hotelOwner3", "ownerPass3", 2500.0, List.of(paymentDetails5));
+        HotelOwner hotelOwner4 = new HotelOwner("hotelOwner4", "ownerPass4", 3000.0, List.of(paymentDetails6));
+
+        Address address1 = new Address("streetno1-hotelowner1-bankaddress1", "streetno2-hotelowner1-bankaddress1", "postcode1-hotelowner1-bankaddress1", "Miami", "USA");
+        Address address2 = new Address("streetno1-hotelowner1-bankaddress2", "streetno2-hotelowner1-bankaddress2", "postcode2-hotelowner1-bankaddress2", "Caracas", "Venezuela");
+        Address address3 = new Address("streetno1-hotelowner2-bankaddress1", "streetno2-hotelowner2-bankaddress1", "postcode1-hotelowner2-bankaddress1", "London", "United Kingdom");
+        Address address4 = new Address("streetno1-hotelowner2-bankaddress2", "streetno2-hotelowner2-bankaddress2", "postcode2-hotelowner2-bankaddress2", "California", "USA");
+        Address address5 = new Address("streetno1-hotelowner3-bankaddress1", "streetno2-hotelowner3-bankaddress1", "postcode1-hotelowner3-bankaddress1", "Coro", "Venezuela");
+        Address address6 = new Address("streetno1-hotelowner4-bankaddress1", "streetno2-hotelowner4-bankaddress1", "postcode1-hotelowner4-bankaddress1", "Madrid", "Spain");
+
+        CardDetails cardDetails1 = new CardDetails("1123432342345434", "423", LocalDate.of(2020, 11, 1), LocalDate.of(2028, 11, 1), address1);
+        CardDetails cardDetails2 = new CardDetails("1236785678987655", "000", LocalDate.of(2019, 7, 1), LocalDate.of(2027, 7, 1), address2);
+        CardDetails cardDetails3 = new CardDetails("3344567389786567", "312", LocalDate.of(2015, 12, 1), LocalDate.of(2025, 12, 1), address3);
+        CardDetails cardDetails4 = new CardDetails("3554687915467454", "908", LocalDate.of(2024, 12, 1), LocalDate.of(2034, 12, 1), address4);
+        CardDetails cardDetails5 = new CardDetails("3312454564567547", "770", LocalDate.of(2025, 1, 1), LocalDate.of(2035, 1, 1), address5);
+        CardDetails cardDetails6 = new CardDetails("4323456547556475", "112", LocalDate.of(2021, 6, 1), LocalDate.of(2031, 6, 1), address6);
+
+        paymentDetails1.setEndUser(hotelOwner1);
+        paymentDetails1.setCardDetails(cardDetails1);
+        paymentDetails2.setEndUser(hotelOwner1);
+        paymentDetails2.setCardDetails(cardDetails2);
+        paymentDetails3.setEndUser(hotelOwner2);
+        paymentDetails3.setCardDetails(cardDetails3);
+        paymentDetails4.setEndUser(hotelOwner2);
+        paymentDetails4.setCardDetails(cardDetails4);
+        paymentDetails5.setEndUser(hotelOwner3);
+        paymentDetails5.setCardDetails(cardDetails5);
+        paymentDetails6.setEndUser(hotelOwner4);
+        paymentDetails6.setCardDetails(cardDetails6);
+
+        return List.of(hotelOwner1, hotelOwner2, hotelOwner3, hotelOwner4);
+    }
+
+    private List<Customer> createCustomers() {
         return List.of(
-            new HotelOwner("hotelOwner1", "ownerPass1", 1500.0),
-            new HotelOwner("hotelOwner2", "ownerPass2", 2000.0),
-            new HotelOwner("hotelOwner3", "ownerPass3", 2500.0),
-            new HotelOwner("hotelOwner4", "ownerPass4", 3000.0)
+                new Customer("customer1", "customerPass1", List.of(new PaymentDetails())),
+                new Customer("customer2", "customerPass2", List.of(new PaymentDetails())),
+                new Customer("customer3", "customerPass3", List.of(new PaymentDetails())),
+                new Customer("customer4", "customerPass4", List.of(new PaymentDetails()))
         );
     }
 

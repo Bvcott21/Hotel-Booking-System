@@ -25,7 +25,8 @@ import lombok.NoArgsConstructor;
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Administrator.class, name = "admin"),
-        @JsonSubTypes.Type(value = HotelOwner.class, name = "hotel_owner")
+        @JsonSubTypes.Type(value = HotelOwner.class, name = "hotel_owner"),
+        @JsonSubTypes.Type(value = Customer.class, name="customer")
 })
 public abstract class User {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
