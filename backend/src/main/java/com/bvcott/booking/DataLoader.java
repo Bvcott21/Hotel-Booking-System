@@ -133,12 +133,46 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private List<Customer> createCustomers() {
-        return List.of(
-                new Customer("customer1", "customerPass1", List.of(new PaymentDetails())),
-                new Customer("customer2", "customerPass2", List.of(new PaymentDetails())),
-                new Customer("customer3", "customerPass3", List.of(new PaymentDetails())),
-                new Customer("customer4", "customerPass4", List.of(new PaymentDetails()))
-        );
+        PaymentDetails paymentDetails1 = new PaymentDetails();
+        PaymentDetails paymentDetails2 = new PaymentDetails();
+        PaymentDetails paymentDetails3 = new PaymentDetails();
+        PaymentDetails paymentDetails4 = new PaymentDetails();
+        PaymentDetails paymentDetails5 = new PaymentDetails();
+        PaymentDetails paymentDetails6 = new PaymentDetails();
+
+        Customer customer1 = new Customer("customer1", "customerPass1", List.of(paymentDetails1, paymentDetails2));
+        Customer customer2 = new Customer("customer2", "customerPass2", List.of(paymentDetails3, paymentDetails4));
+        Customer customer3 = new Customer("customer3", "customerPass3", List.of(paymentDetails5));
+        Customer customer4 = new Customer("customer4", "customerPass4", List.of(paymentDetails6));
+
+        Address address1 = new Address("streetno1-customer1-bankaddress1", "streetno2-customer1-bankaddress1", "postcode1-customer1-bankaddress1", "Miami", "USA");
+        Address address2 = new Address("streetno1-customer1-bankaddress2", "streetno2-customer1-bankaddress2", "postcode2-customer1-bankaddress2", "Caracas", "Venezuela");
+        Address address3 = new Address("streetno1-customer2-bankaddress1", "streetno2-customer2-bankaddress1", "postcode1-customer2-bankaddress1", "London", "United Kingdom");
+        Address address4 = new Address("streetno1-customer2-bankaddress2", "streetno2-customer2-bankaddress2", "postcode2-customer2-bankaddress2", "California", "USA");
+        Address address5 = new Address("streetno1-customer3-bankaddress1", "streetno2-customer3-bankaddress1", "postcode1-customer3-bankaddress1", "Coro", "Venezuela");
+        Address address6 = new Address("streetno1-customer4-bankaddress1", "streetno2-customer4-bankaddress1", "postcode1-customer4-bankaddress1", "Madrid", "Spain");
+
+        CardDetails cardDetails1 = new CardDetails("1123488982345434", "423", LocalDate.of(2020, 11, 1), LocalDate.of(2028, 11, 1), address1);
+        CardDetails cardDetails2 = new CardDetails("1236736548987655", "000", LocalDate.of(2019, 7, 1), LocalDate.of(2027, 7, 1), address2);
+        CardDetails cardDetails3 = new CardDetails("3344511189786567", "312", LocalDate.of(2015, 12, 1), LocalDate.of(2025, 12, 1), address3);
+        CardDetails cardDetails4 = new CardDetails("3554088985467454", "908", LocalDate.of(2024, 12, 1), LocalDate.of(2034, 12, 1), address4);
+        CardDetails cardDetails5 = new CardDetails("3312111222567547", "770", LocalDate.of(2025, 1, 1), LocalDate.of(2035, 1, 1), address5);
+        CardDetails cardDetails6 = new CardDetails("4323665547556475", "112", LocalDate.of(2021, 6, 1), LocalDate.of(2031, 6, 1), address6);
+
+        paymentDetails1.setEndUser(customer1);
+        paymentDetails1.setCardDetails(cardDetails1);
+        paymentDetails2.setEndUser(customer1);
+        paymentDetails2.setCardDetails(cardDetails2);
+        paymentDetails3.setEndUser(customer2);
+        paymentDetails3.setCardDetails(cardDetails3);
+        paymentDetails4.setEndUser(customer2);
+        paymentDetails4.setCardDetails(cardDetails4);
+        paymentDetails5.setEndUser(customer3);
+        paymentDetails5.setCardDetails(cardDetails5);
+        paymentDetails6.setEndUser(customer4);
+        paymentDetails6.setCardDetails(cardDetails6);
+
+        return List.of(customer1, customer2, customer3, customer4);
     }
 
     private List<Hotel> createHotels() {
